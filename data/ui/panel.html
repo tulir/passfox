@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<head>
+	<meta charset="utf-8">
+	<link rel="stylesheet" href="panel.css"/>
+</head>
+<body>
+	<form class="search" id="search" onsubmit="search()">
+		<input type="text" class="textfield search-box" id="search-box">
+	</form>
+
+	<div class="passwords" id="passwords"></div>
+
+	<div class="password-actions" id="password-actions">
+		<div class="action" onClick="directoryClick('')">..</div>
+		<div class="action" onClick="action('copy-password')">Copy Password</div>
+		<div class="action" onClick="action('copy-username')">Copy Username</div>
+		<div class="action" onClick="action('copy-otp')">Copy an OTP</div>
+		<div class="action" onClick="action('display')">View Contents</div>
+	</div>
+
+	<button class="update" id="update" onclick="update()">Update</button>
+
+	<script src="/lib/jquery-3.1.1.min.js"></script>
+	<script src="panel.js"></script>
+</body>
