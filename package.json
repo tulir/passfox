@@ -1,15 +1,15 @@
 {
-  "title": "passFox",
-  "name": "passfox",
-  "version": "0.1.0",
-  "description": "A passwordstore.org extension for Firefox",
-  "main": "index.js",
-  "author": "Tulir Asokan",
-  "engines": {
-    "firefox": ">=38.0a1"
-  },
-  "license": "GPLv3",
-  "keywords": [
-    "jetpack"
-  ]
+    "title": "passFox",
+    "name": "passfox",
+    "version": "0.1.0",
+    "description": "A passwordstore.org extension for Firefox",
+    "main": "index.js",
+    "author": "Tulir Asokan",
+    "engines": {
+        "firefox": ">=38.0a1"
+    },
+    "license": "GPLv3",
+    "keywords": [
+        "jetpack"
+    ]
 }
