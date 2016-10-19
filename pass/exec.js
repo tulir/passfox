@@ -31,7 +31,7 @@ let envsToCopy = ["HOME", "DISPLAY", "SSH_AGENT_PID", "XDG_SESSION_ID",
  * @param callback The callback function to call after execution.
  */
 function runPass(prefs, args, callback) {
-	for (val of envsToCopy) {
+	for (let val of envsToCopy) {
 		prefs[val] = env[val]
 	}
 	prefs.GNUPGHOME = env.HOME + "/.gnupg"

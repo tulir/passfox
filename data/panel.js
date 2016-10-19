@@ -108,7 +108,7 @@ addon.port.on("pass.list", data => {
 	}
 	$("#path").text("/" + path.join("/"))
 
-	for (key in data) {
+	for (let key in data) {
 		if (typeof(data[key]) === "string") {
 			addEntry("password", key)
 		} else {
