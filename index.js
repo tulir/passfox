@@ -19,13 +19,17 @@ let exec = require("pass/exec")
 let clipboard = require("sdk/clipboard");
 let { setTimeout } = require('sdk/timers');
 let notifications = require("sdk/notifications");
+let { env } = require("sdk/system/environment")
 
 let store = new pass.PasswordStore()
-let prefs = {
-	PASSWORD_STORE_CLIP_TIME: 10,
-	PASSWORD_STORE_DIR: "/home/tulir/.password-store",
-	SHELL: "/bin/bash"
-}
+let prefs = [
+	"PASSWORD_STORE_CLIP_TIME=10",
+	"PASSWORD_STORE_DIR=" + env.HOME + "/.password-store",
+	"DISPLAY=" + (env.DISPLAY !== undefined ? env.DISPLAY : ":0.0"),
+	"PATH=" + env.PATH,
+	"GNUPGHOME=" + env.HOME + "/.gnupg",
+	"SHELL=/bin/bash"
+]
 
 let panel = require("sdk/panel").Panel({
 	contentURL: "./panel.html",
@@ -49,12 +53,9 @@ let button = require("sdk/ui").ToggleButton({
 })
 
 function update() {
-	exec.runPass({PASSWORD_STORE_DIR: "/home/tulir/.password-store"}, ["ls"],
-		(status, data, err) => {
-			store.parseFull(data.split("\n"))
-			panel.port.emit("pass.list", store.store)
-		}
-	)
+	let result = exec.runPass(["ls"], prefs)
+	store.parseFull(result.stdout.split("\n"))
+	panel.port.emit("pass.list", store.store)
 }
 
 panel.port.on("pass.search", query => {
@@ -75,46 +76,39 @@ panel.port.on("pass.getlist", path => {
 })
 
 panel.port.on("pass.action", (action, path, password) => {
+	let fullPath = path.concat([password]).join("/")
+	let result = ""
 	switch(action) {
 	case "copy-password":
-		exec.runPass(prefs, ["show", "-c", path.concat([password]).join("/")],
-			(status, data, err) => {
-				console.info(status)
-				console.log(data)
-				console.error(err)
-				panel.port.emit("pass.action.done",
-					"copy-password", path, password)
-				notifications.notify({
-					title: "Password copied",
-					text: "/" + path.concat([password]).join("/"),
-				});
-			}
-		)
+		result = exec.runPass(["show", "-c", fullPath], prefs)
+		console.info(result)
+		panel.port.emit("pass.action.done", "copy-password", path, password)
+		notifications.notify({
+			title: "Password copied",
+			text: "/" + fullPath,
+		});
 		break
 	case "copy-username":
-		exec.runPass(prefs, ["show", path.concat([password]).join("/")],
-			(status, data, err) => {
-				// Find the line starting with "Username: "
-				let username = data.split("\n").find(line => {
-					if (line.toLowerCase().startsWith("username: ")) {
-						return true
-					}
-				})
-				// Cut the "Username: " prefix out
-				username = username.substr("username: ".length)
-				clipboard.set(username)
-				setTimeout(() => {
-					clipboard.set("Lorem ipsum dolor sit amet")
-					clipboard.set("")
-				}, prefs.PASSWORD_STORE_CLIP_TIME * 1000)
-				panel.port.emit("pass.action.done",
-					"copy-username", path, password)
-				notifications.notify({
-					title: "Username copied",
-					text: "/" + path.concat([password]).join("/"),
-				});
+		result = exec.runPass(["show", fullPath], prefs)
+		// Find the line starting with "Username: "
+		let username = result.stdout.split("\n").find(line => {
+			if (line.toLowerCase().startsWith("username: ")) {
+				return true
 			}
-		)
+		})
+		// Cut the "Username: " prefix out
+		username = username.substr("username: ".length)
+		clipboard.set(username)
+		setTimeout(() => {
+			clipboard.set("Lorem ipsum dolor sit amet")
+			clipboard.set("")
+		}, prefs.PASSWORD_STORE_CLIP_TIME * 1000)
+		panel.port.emit("pass.action.done",
+			"copy-username", path, password)
+		notifications.notify({
+			title: "Username copied",
+			text: "/" + fullPath,
+		})
 		break
 	}
 })

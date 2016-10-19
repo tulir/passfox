@@ -13,15 +13,9 @@
 
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-let child_process = require("sdk/system/child_process")
+//let child_process = require("sdk/system/child_process")
+let { subprocess } = require("lib/subprocess.jsm")
 let { env } = require("sdk/system/environment")
-
-let envsToCopy = ["HOME", "DISPLAY", "SSH_AGENT_PID", "XDG_SESSION_ID",
-				"CLUTTER_IM_MODULE", "GTK_MODULES", "SSH_AUTH_SOCK",
-				"SESSION_MANAGER", "PATH", "XDG_SESSION_TYPE", "XDG_SEAT",
-				"XDG_SESSION_DESKTOP", "DBUS_SESSION_BUS_ADDRESS",
-				"XDG_DATA_DIRS", "WINDOWPATH", "XDG_CURRENT_DESKTOP",
-				"XAUTHORITY"]
 
 /**
  * Run the Password Store script
@@ -30,13 +24,36 @@ let envsToCopy = ["HOME", "DISPLAY", "SSH_AGENT_PID", "XDG_SESSION_ID",
  * @param extraArgs An array containing the arguments for pass.
  * @param callback The callback function to call after execution.
  */
-function runPass(prefs, args, callback) {
-	for (let val of envsToCopy) {
-		prefs[val] = env[val]
+function runPass(args, env) {
+	/*prefs.DISPLAY = (env.DISPLAY !== undefined ? env.DISPLAY : ':0.0')
+	delete prefs.TREE_CHARSET
+	let proc = child_process.exec("/usr/bin/pass " + args.join(" "),
+		{env: prefs, shell: prefs.SHELL}, callback)*/
+	let result = undefined
+	let params = {
+		command: "/usr/bin/pass",
+		arguments: args,
+		environment: env,
+		charset: "UTF-8",
+		mergeStderr: false,
+		done: data => result = data
 	}
-	prefs.GNUPGHOME = env.HOME + "/.gnupg"
-	child_process.exec("/usr/bin/pass " + args.join(" "),
-		{env: prefs, shell: prefs.SHELL}, callback)
+	try {
+		let p = subprocess.call(params)
+		p.wait()
+		if (result.exitCode !== 0) {
+			console.error("`pass` execution failed:", result.exitCode)
+			console.error(result.stderr)
+			console.error(result.stdout)
+		} else {
+			console.log("`pass` executed successfully.")
+		}
+	} catch (ex) {
+		console.error("Fuck")
+		console.error(ex)
+		result = {exitCode: -1}
+	}
+	return result;
 }
 
 exports.runPass = runPass
