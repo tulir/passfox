@@ -1,2 +1,2 @@
 scss:
-	node-sass --output data/ui data/ui/panel.scss
+	node-sass --output data data/panel.scss

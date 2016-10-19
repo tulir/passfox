@@ -27,7 +27,7 @@ let prefs = {
 }
 
 let panel = require("sdk/panel").Panel({
-  contentURL: "./ui/panel.html",
+  contentURL: "./panel.html",
   onHide: () => button.state('window', {checked: false}),
   height: 250,
   width: 300
@@ -36,7 +36,7 @@ let panel = require("sdk/panel").Panel({
 let button = require("sdk/ui").ToggleButton({
     id: "pass",
     label: "Pass",
-    icon: "./icons/icon.svg",
+    icon: "./icon.svg",
     onClick: state => {
         if (state.checked) {
             panel.show({position: button})
