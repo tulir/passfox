@@ -4,7 +4,7 @@
 	<link rel="stylesheet" href="panel.css"/>
 </head>
 <body>
-	<div class="search-wrapper">
+	<div class="top-bar">
 		<input
 			type="text"
 			class="textfield search-box"
@@ -23,8 +23,10 @@
 		<div class="action entry" onClick="action('copy-otp')">Copy an OTP</div>
 		<div class="action entry" onClick="action('display')">View Contents</div>
 	</div>
-
-	<button class="update" id="update" onclick="update()">Update</button>
+	
+	<div class="bottom-bar">
+		<button class="update" id="update" onclick="update()">Update</button>
+	</div>
 
 	<script src="/lib/jquery-3.1.1.min.js"></script>
 	<script src="panel.js"></script>
