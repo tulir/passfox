@@ -35,15 +35,7 @@ panel.port.on("getdata", path => {
 var button = require("sdk/ui").ToggleButton({
     id: "pass",
     label: "Pass",
-    icon: {
-        "16": "./icons/16.png",
-        "32": "./icons/32.png",
-        "48": "./icons/48.png",
-        "64": "./icons/64.png",
-        "128": "./icons/128.png",
-        "256": "./icons/256.png",
-        "512": "./icons/512.png"
-    },
+    icon: "./icons/icon.svg",
     onClick: state => {
         if (state.checked) {
             panel.show({position: button})
