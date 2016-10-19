@@ -23,7 +23,8 @@ let notifications = require("sdk/notifications");
 let store = new pass.PasswordStore()
 let prefs = {
 	PASSWORD_STORE_CLIP_TIME: 10,
-	PASSWORD_STORE_DIR: "/home/tulir/.password-store"
+	PASSWORD_STORE_DIR: "/home/tulir/.password-store",
+	SHELL: "/bin/bash"
 }
 
 let panel = require("sdk/panel").Panel({

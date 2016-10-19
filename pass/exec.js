@@ -13,8 +13,15 @@
 
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-var child_process = require("sdk/system/child_process")
-var { env } = require("sdk/system/environment")
+let child_process = require("sdk/system/child_process")
+let { env } = require("sdk/system/environment")
+
+let envsToCopy = ["HOME", "DISPLAY", "SSH_AGENT_PID", "XDG_SESSION_ID",
+				"CLUTTER_IM_MODULE", "GTK_MODULES", "SSH_AUTH_SOCK",
+				"SESSION_MANAGER", "PATH", "XDG_SESSION_TYPE", "XDG_SEAT",
+				"XDG_SESSION_DESKTOP", "DBUS_SESSION_BUS_ADDRESS",
+				"XDG_DATA_DIRS", "WINDOWPATH", "XDG_CURRENT_DESKTOP",
+				"XAUTHORITY"]
 
 /**
  * Run the Password Store script
@@ -24,8 +31,10 @@ var { env } = require("sdk/system/environment")
  * @param callback The callback function to call after execution.
  */
 function runPass(prefs, args, callback) {
-	prefs.HOME = env.HOME
-	prefs.DISPLAY = env.DISPLAY
+	for (val of envsToCopy) {
+		prefs[val] = env[val]
+	}
+	prefs.GNUPGHOME = env.HOME + "/.gnupg"
 	child_process.exec("/usr/bin/pass " + args.join(" "),
 		{env: prefs, shell: prefs.SHELL}, callback)
 }
