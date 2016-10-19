@@ -72,7 +72,7 @@ addon.port.on("pass.search.results", data => {
 	$("#passwords").empty()
 	$("#path").text("Search results:")
 	for (key of data) {
-		addEntry("password", key)
+		addEntry(key.type, key.path)
 	}
 })
 

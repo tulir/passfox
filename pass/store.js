@@ -104,8 +104,16 @@ class PasswordDirectory {
             let newTree = tree.clone().enter(key)
             if (typeof(this[key]) === "string") {
                 if (key.toLowerCase().indexOf(query) !== -1) {
-                    results.push(newTree.toString())
+                    results.push({
+                        path: "/" + newTree.toString(),
+                        type: "password"
+                    })
                 }
+            } else if (newTree.toString().toLowerCase().indexOf(query) !== -1) {
+                results.push({
+                    path: "/" + newTree.toString() + "/",
+                    type: "directory"
+                })
             } else {
                 results = results.concat(this[key].search(query, newTree))
             }
