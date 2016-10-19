@@ -15,7 +15,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 class PasswordStore {
     constructor() {
-        this.store = {}
+        this.store = new PasswordDirectory()
     }
 
     /**
@@ -87,21 +87,50 @@ class PasswordStore {
         }
         this.fixTopLevel()
     }
+
+    search(query) {
+        return this.store.search(query.toLowerCase(), new PathTree())
+    }
 }
 
 class PasswordDirectory {
     addPassword(name) {
         this[name] = ""
     }
+
+    search(query, tree) {
+        var results = []
+        for (let key in this) {
+            let newTree = tree.clone().enter(key)
+            if (typeof(this[key]) === "string") {
+                if (key.toLowerCase().indexOf(query) !== -1) {
+                    results.push(newTree.toString())
+                }
+            } else {
+                results = results.concat(this[key].search(query, newTree))
+            }
+        }
+        return results
+    }
 }
 
 class PathTree {
-    constructor() {
-        this.tree = []
+    constructor(arr) {
+        if (arr === undefined) {
+            arr = []
+        } else {
+            arr = [].concat(arr)
+        }
+        this.tree = arr
+    }
+
+    clone() {
+        return new PathTree(this.tree)
     }
 
     enter(section) {
         this.tree[this.tree.length] = section
+        return this
     }
 
 
@@ -112,6 +141,7 @@ class PathTree {
      */
     exit(numOfSections) {
         this.exitToDepth(this.tree.length - numOfSections)
+        return this
     }
 
     /**
@@ -124,6 +154,11 @@ class PathTree {
             depth = this.tree.length - 1
         }
         this.tree = this.tree.slice(0, depth)
+        return this
+    }
+
+    toString() {
+        return this.tree.join("/")
     }
 
     depth() {
