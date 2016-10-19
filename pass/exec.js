@@ -13,8 +13,7 @@
 
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//let child_process = require("sdk/system/child_process")
-let { subprocess } = require("lib/subprocess.jsm")
+let child_process = require("sdk/system/child_process")
 let { env } = require("sdk/system/environment")
 
 /**
@@ -24,36 +23,33 @@ let { env } = require("sdk/system/environment")
  * @param extraArgs An array containing the arguments for pass.
  * @param callback The callback function to call after execution.
  */
-function runPass(args, env) {
-	/*prefs.DISPLAY = (env.DISPLAY !== undefined ? env.DISPLAY : ':0.0')
-	delete prefs.TREE_CHARSET
-	let proc = child_process.exec("/usr/bin/pass " + args.join(" "),
-		{env: prefs, shell: prefs.SHELL}, callback)*/
-	let result = undefined
-	let params = {
-		command: "/usr/bin/pass",
-		arguments: args,
-		environment: env,
-		charset: "UTF-8",
-		mergeStderr: false,
-		done: data => result = data
-	}
-	try {
-		let p = subprocess.call(params)
-		p.wait()
-		if (result.exitCode !== 0) {
-			console.error("`pass` execution failed:", result.exitCode)
-			console.error(result.stderr)
-			console.error(result.stdout)
-		} else {
-			console.log("`pass` executed successfully.")
-		}
-	} catch (ex) {
-		console.error("Fuck")
-		console.error(ex)
-		result = {exitCode: -1}
-	}
-	return result;
+function pass(args, env, callback) {
+	let proc = child_process.spawn(env.SHELL, ["-c", "/usr/bin/pass " + args.join(" ")], {env: env})
+	let stdout = ""
+	let stderr = ""
+	proc.stdout.on("data", data => stdout += data)
+	proc.stderr.on("data", data => stderr += data)
+	proc.on("close", code => callback(code, stdout, stderr))
 }
 
-exports.runPass = runPass
+function getValue(fullPath, key, env, callback) {
+	pass(["show", fullPath], env, (status, data, err) => {
+		let val = data.split("\n").find(line => {
+			if (line.toLowerCase().startsWith(key + ": ")) {
+				return true
+			}
+		})
+		if (val !== undefined && val.length > (key + ": ").length) {
+			val = val.substr((key + ": ").length)
+		}
+		callback(val, status, data, err)
+	})
+}
+
+function copyPassword(fullPath, env, callback) {
+	pass(["show", "-c", fullPath], env, callback)
+}
+
+exports.pass = pass
+exports.getValue = getValue
+exports.copyPassword = copyPassword

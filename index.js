@@ -16,26 +16,32 @@
 let self = require("sdk/self")
 let pass = require("pass/store")
 let exec = require("pass/exec")
-let clipboard = require("sdk/clipboard");
-let { setTimeout } = require('sdk/timers');
-let notifications = require("sdk/notifications");
+let clipboard = require("sdk/clipboard")
+let { setTimeout } = require('sdk/timers')
+let notifications = require("sdk/notifications")
 let { env } = require("sdk/system/environment")
 
 let store = new pass.PasswordStore()
-let prefs = [
-	"PASSWORD_STORE_CLIP_TIME=10",
-	"PASSWORD_STORE_DIR=" + env.HOME + "/.password-store",
-	"DISPLAY=" + (env.DISPLAY !== undefined ? env.DISPLAY : ":0.0"),
-	"PATH=" + env.PATH,
-	"GNUPGHOME=" + env.HOME + "/.gnupg",
-	"SHELL=/bin/bash"
-]
+let prefs = {
+	PASSWORD_STORE_CLIP_TIME: 10,
+	PASSWORD_STORE_DIR: env.HOME + "/.password-store",
+	GNUPGHOME: env.HOME + "/.gnupg",
+	HOME: env.HOME,
+	USER: env.USER,
+	USERNAME: env.USERNAME,
+	GPG_AGENT_INFO: env.GPG_AGENT_INFO,
+	DESKTOP_SESSION: env.DESKTOP_SESSION,
+	DBUS_SESSION_BUS_ADDRESS: env.DBUS_SESSION_BUS_ADDRESS,
+	DISPLAY: (env.DISPLAY !== undefined ? env.DISPLAY : ":0.0"),
+	PATH: env.PATH,
+	SHELL: "/bin/bash"
+}
 
 let panel = require("sdk/panel").Panel({
 	contentURL: "./panel.html",
 	onHide: () => button.state('window', {checked: false}),
-	height: 250,
-	width: 300
+	height: 320,
+	width: 432
 })
 
 let button = require("sdk/ui").ToggleButton({
@@ -53,9 +59,10 @@ let button = require("sdk/ui").ToggleButton({
 })
 
 function update() {
-	let result = exec.runPass(["ls"], prefs)
-	store.parseFull(result.stdout.split("\n"))
-	panel.port.emit("pass.list", store.store)
+	exec.pass(["ls"], prefs, (status, data, err) => {
+		store.parseFull(data.split("\n"))
+		panel.port.emit("pass.list", store.store)
+	})
 }
 
 panel.port.on("pass.search", query => {
@@ -77,38 +84,52 @@ panel.port.on("pass.getlist", path => {
 
 panel.port.on("pass.action", (action, path, password) => {
 	let fullPath = path.concat([password]).join("/")
-	let result = ""
 	switch(action) {
 	case "copy-password":
-		result = exec.runPass(["show", "-c", fullPath], prefs)
-		console.info(result)
-		panel.port.emit("pass.action.done", "copy-password", path, password)
-		notifications.notify({
-			title: "Password copied",
-			text: "/" + fullPath,
-		});
+		exec.copyPassword(fullPath, prefs, (status, data, err) => {
+			console.error(status)
+			console.error(data)
+			console.error(err)
+			let fail = err.indexOf("gpg: decryption failed") !== -1
+			if (fail) {
+				faild(err)
+				return
+			}
+			panel.port.emit("pass.action.done", "copy-password", path, password)
+			notifications.notify({
+				title: "Password copied",
+				text: "/" + fullPath,
+			})
+		})
 		break
 	case "copy-username":
-		result = exec.runPass(["show", fullPath], prefs)
-		// Find the line starting with "Username: "
-		let username = result.stdout.split("\n").find(line => {
-			if (line.toLowerCase().startsWith("username: ")) {
-				return true
+		exec.getValue(fullPath, "Username", prefs, (val, status, data, err) => {
+			console.error(status)
+			console.error(data)
+			console.error(err)
+			let fail = err.indexOf("gpg: decryption failed") !== -1
+			if (fail) {
+				faild(err)
+				return
 			}
-		})
-		// Cut the "Username: " prefix out
-		username = username.substr("username: ".length)
-		clipboard.set(username)
-		setTimeout(() => {
-			clipboard.set("Lorem ipsum dolor sit amet")
-			clipboard.set("")
-		}, prefs.PASSWORD_STORE_CLIP_TIME * 1000)
-		panel.port.emit("pass.action.done",
-			"copy-username", path, password)
-		notifications.notify({
-			title: "Username copied",
-			text: "/" + fullPath,
+			clipboard.set(val)
+			setTimeout(() => {
+				clipboard.set("Lorem ipsum dolor sit amet")
+				clipboard.set("")
+			}, prefs.PASSWORD_STORE_CLIP_TIME * 1000)
+			panel.port.emit("pass.action.done", "copy-username", path, password)
+			notifications.notify({
+				title: "Username copied",
+				text: "/" + fullPath,
+			})
 		})
 		break
 	}
 })
+
+function faild(text) {
+	notifications.notify({
+		title: "Failed to decrypt password!",
+		text: text
+	})
+}
