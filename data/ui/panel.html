@@ -4,18 +4,24 @@
 	<link rel="stylesheet" href="panel.css"/>
 </head>
 <body>
-	<form class="search" id="search" onsubmit="search()">
-		<input type="text" class="textfield search-box" id="search-box">
-	</form>
+	<div class="search-wrapper">
+		<input
+			type="text"
+			class="textfield search-box"
+			placeholder="Search..."
+			id="search-box"
+			onkeyup="search()"
+		>
+	</div>
 
+	<div class="path" id="path"></div>
 	<div class="passwords" id="passwords"></div>
-
-	<div class="password-actions" id="password-actions">
-		<div class="action" onClick="directoryClick('')">..</div>
-		<div class="action" onClick="action('copy-password')">Copy Password</div>
-		<div class="action" onClick="action('copy-username')">Copy Username</div>
-		<div class="action" onClick="action('copy-otp')">Copy an OTP</div>
-		<div class="action" onClick="action('display')">View Contents</div>
+	<div class="password-actions hidden" id="password-actions">
+		<div class="action entry" onClick="exitPasswordView()">..</div>
+		<div class="action entry" onClick="action('copy-password')">Copy Password</div>
+		<div class="action entry" onClick="action('copy-username')">Copy Username</div>
+		<div class="action entry" onClick="action('copy-otp')">Copy an OTP</div>
+		<div class="action entry" onClick="action('display')">View Contents</div>
 	</div>
 
 	<button class="update" id="update" onclick="update()">Update</button>

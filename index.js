@@ -17,19 +17,13 @@ var self = require("sdk/self")
 var pass = require("pass/store")
 var exec = require("pass/exec")
 
+var store = new pass.PasswordStore()
+
 var panel = require("sdk/panel").Panel({
   contentURL: "./ui/panel.html",
-  onHide: () => button.state('window', {checked: false})
-})
-
-panel.port.on("search", query => {
-    console.log("Querying", query)
-})
-
-panel.port.on("update", update)
-
-panel.port.on("getdata", path => {
-    panel.port.emit("data", store.dynamicGet(path))
+  onHide: () => button.state('window', {checked: false}),
+  height: 250,
+  width: 300
 })
 
 var button = require("sdk/ui").ToggleButton({
@@ -46,13 +40,28 @@ var button = require("sdk/ui").ToggleButton({
     }
 })
 
-var store = new pass.PasswordStore()
-
 function update() {
     exec.runPass({PASSWORD_STORE_DIR: "/home/tulir/.password-store"}, ["ls"],
         (status, data, err) => {
         	store.parseFull(data.split("\n"))
-            panel.port.emit("data", store.store)
+            panel.port.emit("pass.list", store.store)
         }
     )
 }
+
+panel.port.on("pass.search", query => {
+    let results = store.search(query)
+    if (results.length > 20) {
+        panel.port.emit("pass.search.toomanyresults")
+    } else if (results.length === 0) {
+        panel.port.emit("pass.search.noresults")
+    } else {
+        panel.port.emit("pass.search.results", results)
+    }
+})
+
+panel.port.on("pass.update", update)
+
+panel.port.on("pass.getlist", path => {
+    panel.port.emit("pass.list", store.dynamicGet(path))
+})
