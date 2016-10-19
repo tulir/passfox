@@ -13,20 +13,27 @@
 
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-var self = require("sdk/self")
-var pass = require("pass/store")
-var exec = require("pass/exec")
+let self = require("sdk/self")
+let pass = require("pass/store")
+let exec = require("pass/exec")
+let clipboard = require("sdk/clipboard");
+let { setTimeout } = require('sdk/timers');
+let notifications = require("sdk/notifications");
 
-var store = new pass.PasswordStore()
+let store = new pass.PasswordStore()
+let prefs = {
+    PASSWORD_STORE_CLIP_TIME: 10,
+    PASSWORD_STORE_DIR: "/home/tulir/.password-store"
+}
 
-var panel = require("sdk/panel").Panel({
+let panel = require("sdk/panel").Panel({
   contentURL: "./ui/panel.html",
   onHide: () => button.state('window', {checked: false}),
   height: 250,
   width: 300
 })
 
-var button = require("sdk/ui").ToggleButton({
+let button = require("sdk/ui").ToggleButton({
     id: "pass",
     label: "Pass",
     icon: "./icons/icon.svg",
@@ -64,4 +71,49 @@ panel.port.on("pass.update", update)
 
 panel.port.on("pass.getlist", path => {
     panel.port.emit("pass.list", store.dynamicGet(path))
+})
+
+panel.port.on("pass.action", (action, path, password) => {
+    switch(action) {
+    case "copy-password":
+        exec.runPass(prefs, ["show", "-c", path.concat([password]).join("/")],
+            (status, data, err) => {
+                console.info(status)
+                console.log(data)
+                console.error(err)
+                panel.port.emit("pass.action.done",
+                    "copy-password", path, password)
+                notifications.notify({
+                    title: "Password copied",
+                    text: "/" + path.concat([password]).join("/"),
+                });
+            }
+        )
+        break
+    case "copy-username":
+        exec.runPass(prefs, ["show", path.concat([password]).join("/")],
+            (status, data, err) => {
+                // Find the line starting with "Username: "
+                let username = data.split("\n").find(line => {
+                    if (line.toLowerCase().startsWith("username: ")) {
+                        return true
+                    }
+                })
+                // Cut the "Username: " prefix out
+                username = username.substr("username: ".length)
+                clipboard.set(username)
+                setTimeout(() => {
+                    clipboard.set("Lorem ipsum dolor sit amet")
+                    clipboard.set("")
+                }, prefs.PASSWORD_STORE_CLIP_TIME * 1000)
+                panel.port.emit("pass.action.done",
+                    "copy-username", path, password)
+                notifications.notify({
+                    title: "Username copied",
+                    text: "/" + path.concat([password]).join("/"),
+                });
+            }
+        )
+        break
+    }
 })

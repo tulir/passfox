@@ -25,6 +25,7 @@ var { env } = require("sdk/system/environment")
  */
 function runPass(prefs, args, callback) {
 	prefs.HOME = env.HOME
+	prefs.DISPLAY = env.DISPLAY
 	child_process.exec("/usr/bin/pass " + args.join(" "),
 		{env: prefs, shell: prefs.SHELL}, callback)
 }
