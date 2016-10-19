@@ -33,10 +33,20 @@ function update() {
 	addon.port.emit("pass.update")
 }
 
-function passwordClick(name) {
+function passwordClick(name, searchClick) {
 	$("#passwords").addClass("hidden")
 	$("#password-actions").removeClass("hidden")
-	password = name
+	if (searchClick) {
+		// Remove prefix slash and split into a path array.
+		path = name.substr(1).split("/")
+		// Extract the last object of the path (the password).
+		password = path[path.length-1]
+		// Remove the last object (the password) from the path, so only the
+		// directories are left in the path array.
+		path = path.slice(0, path.length-1)
+	} else {
+		password = name
+	}
 
 	let fullPath = [].concat(path)
 	fullPath.push(password)
@@ -49,8 +59,11 @@ function exitPasswordView() {
 	addon.port.emit("pass.getlist", path)
 }
 
-function directoryClick(name) {
-	if (name === "..") {
+function directoryClick(name, searchClick) {
+	if (searchClick) {
+		// Remove the prefix and suffix slash and split into a path array.
+		path = name.substr(1, name.length-2).split("/")
+	} else if (name === "..") {
 		path = path.slice(0, path.length - 1)
 	} else if (name.length > 0) {
 		path[path.length] = name
@@ -58,10 +71,11 @@ function directoryClick(name) {
 	addon.port.emit("pass.getlist", path)
 }
 
-function addEntry(type, name) {
+function addEntry(type, name, isSearchResult) {
+	isSearchResult = isSearchResult ? "true" : "false"
 	$("#passwords").append(
 		"<div \
-		onClick='" + type + "Click(this.innerHTML)' \
+		onClick='" + type + "Click(this.innerHTML, " + isSearchResult + ")' \
 		class='" + type + " entry'>"
 			+ name +
 		"</div>"
@@ -72,7 +86,7 @@ addon.port.on("pass.search.results", data => {
 	$("#passwords").empty()
 	$("#path").text("Search results:")
 	for (key of data) {
-		addEntry(key.type, key.path)
+		addEntry(key.type, key.path, true)
 	}
 })
 
