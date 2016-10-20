@@ -24,7 +24,7 @@ let { env } = require("sdk/system/environment")
  * @param callback The callback function to call after execution.
  */
 function pass(args, env, callback) {
-	let proc = child_process.spawn(env.SHELL, ["-c", "/usr/bin/pass " + args.join(" ")], {env: env})
+	let proc = child_process.spawn("/usr/bin/pass", args, {env: env})
 	let stdout = ""
 	let stderr = ""
 	proc.stdout.on("data", data => stdout += data)
@@ -47,10 +47,12 @@ function getValue(fullPath, key, env, callback) {
 	})
 }
 
-function copyPassword(fullPath, env, callback) {
-	pass(["show", "-c", fullPath], env, callback)
+function getPassword(fullPath, env, callback) {
+	pass(["show", fullPath], env, (status, data, err) => {
+		callback(data.split("\n")[0], status, data, err)
+	})
 }
 
 exports.pass = pass
 exports.getValue = getValue
-exports.copyPassword = copyPassword
+exports.getPassword = getPassword

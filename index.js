@@ -78,58 +78,59 @@ panel.port.on("pass.search", query => {
 
 panel.port.on("pass.update", update)
 
-panel.port.on("pass.getlist", path => {
+panel.port.on("pass.getlist", path =>
 	panel.port.emit("pass.list", store.dynamicGet(path))
-})
+)
 
 panel.port.on("pass.action", (action, path, password) => {
 	let fullPath = path.concat([password]).join("/")
 	switch(action) {
 	case "copy-password":
-		exec.copyPassword(fullPath, prefs, (status, data, err) => {
+		exec.getPassword(fullPath, prefs, (passwd, status, data, err) => {
 			console.error(status)
 			console.error(data)
 			console.error(err)
-			let fail = err.indexOf("gpg: decryption failed") !== -1
-			if (fail) {
-				faild(err)
+			if (failed(err)) {
 				return
 			}
+			copy(passwd, fullPath, "Password")
 			panel.port.emit("pass.action.done", "copy-password", path, password)
-			notifications.notify({
-				title: "Password copied",
-				text: "/" + fullPath,
-			})
 		})
 		break
 	case "copy-username":
 		exec.getValue(fullPath, "Username", prefs, (val, status, data, err) => {
+			console.error(val)
 			console.error(status)
 			console.error(data)
 			console.error(err)
-			let fail = err.indexOf("gpg: decryption failed") !== -1
-			if (fail) {
-				faild(err)
+			if (failed(err)) {
 				return
 			}
-			clipboard.set(val)
-			setTimeout(() => {
-				clipboard.set("Lorem ipsum dolor sit amet")
-				clipboard.set("")
-			}, prefs.PASSWORD_STORE_CLIP_TIME * 1000)
+			copy(val, fullPath, "Username")
 			panel.port.emit("pass.action.done", "copy-username", path, password)
-			notifications.notify({
-				title: "Username copied",
-				text: "/" + fullPath,
-			})
 		})
 		break
 	}
 })
 
-function faild(text) {
+function failed(err) {
+	if (err.indexOf("gpg: decryption failed") !== -1) {
+		notifications.notify({
+			title: "Failed to decrypt password!",
+			text: err
+		})
+		return true
+	}
+}
+
+function copy(val, path, name) {
+	clipboard.set(val)
+	setTimeout(() => {
+		clipboard.set("Lorem ipsum dolor sit amet")
+		clipboard.set("")
+	}, prefs.PASSWORD_STORE_CLIP_TIME * 1000)
 	notifications.notify({
-		title: "Failed to decrypt password!",
-		text: text
+		title: name + " copied",
+		text: "/" + path,
 	})
 }
