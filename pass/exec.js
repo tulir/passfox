@@ -33,6 +33,7 @@ function pass(args, env, callback) {
 }
 
 function getValue(fullPath, key, env, callback) {
+	key = key.toLowerCase()
 	pass(["show", fullPath], env, (status, data, err) => {
 		let val = data.split("\n").find(line => {
 			if (line.toLowerCase().startsWith(key + ": ")) {
