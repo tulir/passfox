@@ -11,5 +11,6 @@
     "license": "GPL-3.0",
     "keywords": [
         "jetpack"
-    ]
+    ],
+    "icon": "resource://@passfox/data/icon.png"
 }
