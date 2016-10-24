@@ -49,22 +49,20 @@ let button = require("sdk/ui").ToggleButton({
 		if (state.checked) {
 			panel.show({position: button})
 			if (JSON.stringify(store.store) === "{}") {
-				update()
+				update([])
 			}
 		}
 	}
 })
 
-function update() {
+function update(path) {
 	exec.pass(["ls"], prefs, (status, data, err) => {
 		store.parseFull(data.split("\n"))
-		panel.port.emit("pass.list", store.store)
+		panel.port.emit("pass.list", store.dynamicGet(path))
 	})
 }
 
 panel.port.on("pass.update", update)
-
-panel.port.on("show", () => panel.port.emit("show"))
 
 panel.port.on("pass.search", query =>
 	panel.port.emit("pass.search.results", store.search(query))

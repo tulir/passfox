@@ -30,7 +30,7 @@ function action(act) {
 }
 
 function update() {
-	addon.port.emit("pass.update")
+	addon.port.emit("pass.update", path)
 }
 
 function passwordClick(name, searchClick) {
@@ -71,7 +71,7 @@ function directoryClick(name, searchClick) {
 	} else if (name.length > 0) {
 		path[path.length] = name
 	}
-	addon.port.emit("pass.getlist", path)
+	addon.port.emit("pass.list.get", path)
 }
 
 function addEntry(type, name, isSearchResult) {
@@ -84,8 +84,6 @@ function addEntry(type, name, isSearchResult) {
 		"</div>"
 	)
 }
-
-addon.port.on("show", () => $("#search").focus())
 
 addon.port.on("pass.search.results", data => {
 	exitPasswordView()
