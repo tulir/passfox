@@ -32,18 +32,24 @@ function pass(args, env, callback) {
 	proc.on("close", code => callback(code, stdout, stderr))
 }
 
-function getValue(fullPath, key, env, callback) {
-	key = key.toLowerCase()
-	pass(["show", fullPath], env, (status, data, err) => {
-		let val = data.split("\n").find(line => {
-			if (line.toLowerCase().startsWith(key + ": ")) {
-				return true
-			}
-		})
-		if (val !== undefined && val.length > (key + ": ").length) {
-			val = val.substr((key + ": ").length)
+function getValue(fullPath, keys, env, callback) {
+	let realKeys = []
+	if (typeof(keys) === "string") {
+		realKeys.push(keys.toLowerCase() + ": ")
+	} else {
+		for (key of keys) {
+			realKeys.push(key.toLowerCase() + ": ")
 		}
-		callback(val, status, data, err)
+	}
+	pass(["show", fullPath], env, (status, data, err) => {
+		for (line of data.split("\n")) {
+			for (key of realKeys) {
+				if (line.toLowerCase().startsWith(key)) {
+					callback(line.substr(key.length), status, data, err)
+					return
+				}
+			}
+		}
 	})
 }
 
