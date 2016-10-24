@@ -82,10 +82,9 @@
 
 	background-color: #47B9D7;
 
-	.update {
+	button {
 		position: absolute;
 		bottom: 0;
-		left: 0;
 
 		width: 50%;
 		padding: .375rem 1rem;
@@ -97,9 +96,16 @@
 
 		font-size: 1rem;
 		font-weight: bold;
+
+		&.left {
+			left: 0;
+		}
+		&.right {
+			right: 0;
+		}
 	}
 
-	.update:hover {
+	button:hover {
 		background-color: #2193B1;
 	}
 }
