@@ -83,13 +83,11 @@ panel.port.on("pass.getlist", path =>
 )
 
 panel.port.on("pass.action", (action, path, password) => {
+	panel.hide()
 	let fullPath = path.concat([password]).join("/")
 	switch(action) {
 	case "copy-password":
 		exec.getPassword(fullPath, prefs, (passwd, status, data, err) => {
-			console.error(status)
-			console.error(data)
-			console.error(err)
 			if (failed(err)) {
 				return
 			}
@@ -99,10 +97,6 @@ panel.port.on("pass.action", (action, path, password) => {
 		break
 	case "copy-username":
 		exec.getValue(fullPath, "Username", prefs, (val, status, data, err) => {
-			console.error(val)
-			console.error(status)
-			console.error(data)
-			console.error(err)
 			if (failed(err)) {
 				return
 			}
