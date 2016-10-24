@@ -54,9 +54,12 @@ function passwordClick(name, searchClick) {
 }
 
 function exitPasswordView() {
-	$("#passwords").removeClass("hidden")
-	$("#password-actions").addClass("hidden")
-	addon.port.emit("pass.list.get", path)
+	if ($("#passwords").hasClass("hidden")
+		|| !$("#password-actions").hasClass("hidden")) {
+		$("#passwords").removeClass("hidden")
+		$("#password-actions").addClass("hidden")
+		addon.port.emit("pass.list.get", path)
+	}
 }
 
 function directoryClick(name, searchClick) {
@@ -85,6 +88,7 @@ function addEntry(type, name, isSearchResult) {
 addon.port.on("show", () => $("#search").focus())
 
 addon.port.on("pass.search.results", data => {
+	exitPasswordView()
 	$("#passwords").empty()
 
 	if (data.length === 0) {
@@ -100,6 +104,7 @@ addon.port.on("pass.search.results", data => {
 })
 
 addon.port.on("pass.list", data => {
+	exitPasswordView()
 	$("#passwords").empty()
 
 	if (path.length > 0) {
