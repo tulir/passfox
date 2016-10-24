@@ -48,9 +48,11 @@ function passwordClick(name, searchClick) {
 		password = name
 	}
 
-	let fullPath = [].concat(path)
-	fullPath.push(password)
-	$("#path").text("/" + fullPath.join("/"))
+	let pathStr = "/" + path.join("/")
+	if (pathStr.length !== 1 || password.length !== 0) {
+		pathStr += "/"
+	}
+	$("#path").text(pathStr + password)
 }
 
 function exitPasswordView() {
@@ -108,7 +110,12 @@ addon.port.on("pass.list", data => {
 	if (path.length > 0) {
 		addEntry("directory", "..")
 	}
-	$("#path").text("/" + path.join("/"))
+
+	let pathStr = "/" + path.join("/")
+	if (pathStr.length !== 1) {
+		pathStr += "/"
+	}
+	$("#path").text(pathStr)
 
 	for (let key in data) {
 		if (typeof(data[key]) === "string") {
