@@ -1,4 +1,4 @@
 # passFox
 A passwordstore.org extension for Firefox.
 
-This extension is partly of functional, but definitely not recommended for anything but testing things.
+passFox has the most basic features implemented, but I wouldn't recommend it for daily use yet.
