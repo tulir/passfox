@@ -17,16 +17,16 @@ var path = []
 var password = ""
 
 function search() {
-	let query = $("#search-box").val()
+	let query = $("#search").val()
 	if (query.length === 0) {
-		addon.port.emit("pass.getlist", path)
+		addon.port.emit("pass.list.get", path)
 	} else {
 		addon.port.emit("pass.search", query)
 	}
 }
 
 function action(act) {
-	addon.port.emit("pass.action", act, path, password)
+	addon.port.emit("pass.action." + act, path.concat([password]).join(" "))
 }
 
 function update() {
@@ -56,7 +56,7 @@ function passwordClick(name, searchClick) {
 function exitPasswordView() {
 	$("#passwords").removeClass("hidden")
 	$("#password-actions").addClass("hidden")
-	addon.port.emit("pass.getlist", path)
+	addon.port.emit("pass.list.get", path)
 }
 
 function directoryClick(name, searchClick) {
@@ -82,22 +82,21 @@ function addEntry(type, name, isSearchResult) {
 	)
 }
 
+addon.port.on("show", () => $("#search").focus())
+
 addon.port.on("pass.search.results", data => {
 	$("#passwords").empty()
+
+	if (data.length === 0) {
+		$("#path").text("No results!")
+	} else if (data.length > 20) {
+		$("#path").text("Too many results!")
+	}
+
 	$("#path").text("Search results:")
 	for (key of data) {
 		addEntry(key.type, key.path, true)
 	}
-})
-
-addon.port.on("pass.search.noresults", () => {
-	$("#passwords").empty()
-	$("#path").text("No results!")
-})
-
-addon.port.on("pass.search.toomanyresults", () => {
-	$("#passwords").empty()
-	$("#path").text("Too many results!")
 })
 
 addon.port.on("pass.list", data => {

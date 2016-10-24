@@ -28,10 +28,7 @@ let prefs = {
 	GNUPGHOME: env.HOME + "/.gnupg",
 	HOME: env.HOME,
 	USER: env.USER,
-	USERNAME: env.USERNAME,
 	GPG_AGENT_INFO: env.GPG_AGENT_INFO,
-	DESKTOP_SESSION: env.DESKTOP_SESSION,
-	DBUS_SESSION_BUS_ADDRESS: env.DBUS_SESSION_BUS_ADDRESS,
 	DISPLAY: (env.DISPLAY !== undefined ? env.DISPLAY : ":0.0"),
 	PATH: env.PATH,
 	SHELL: "/bin/bash"
@@ -65,46 +62,46 @@ function update() {
 	})
 }
 
-panel.port.on("pass.search", query => {
-	let results = store.search(query)
-	if (results.length > 20) {
-		panel.port.emit("pass.search.toomanyresults")
-	} else if (results.length === 0) {
-		panel.port.emit("pass.search.noresults")
-	} else {
-		panel.port.emit("pass.search.results", results)
-	}
-})
-
 panel.port.on("pass.update", update)
 
-panel.port.on("pass.getlist", path =>
+panel.port.on("show", () => panel.port.emit("show"))
+
+panel.port.on("pass.search", query =>
+	panel.port.emit("pass.search.results", store.search(query))
+)
+
+panel.port.on("pass.list.get", path =>
 	panel.port.emit("pass.list", store.dynamicGet(path))
 )
 
-panel.port.on("pass.action", (action, path, password) => {
+panel.port.on("pass.action.copy-password", fullPath => {
 	panel.hide()
-	let fullPath = path.concat([password]).join("/")
-	switch(action) {
-	case "copy-password":
-		exec.getPassword(fullPath, prefs, (passwd, status, data, err) => {
-			if (failed(err)) {
-				return
-			}
-			copy(passwd, fullPath, "Password")
-			panel.port.emit("pass.action.done", "copy-password", path, password)
-		})
-		break
-	case "copy-username":
-		exec.getValue(fullPath, "Username", prefs, (val, status, data, err) => {
-			if (failed(err)) {
-				return
-			}
-			copy(val, fullPath, "Username")
-			panel.port.emit("pass.action.done", "copy-username", path, password)
-		})
-		break
-	}
+	exec.getPassword(fullPath, prefs, (passwd, status, data, err) => {
+		if (failed(err)) {
+			return
+		}
+		copy(passwd, fullPath, "Password")
+	})
+})
+
+panel.port.on("pass.action.copy-username", fullPath => {
+	panel.hide()
+	exec.getValue(fullPath, ["Username", "User", "Email"], prefs, (val, status, data, err) => {
+		if (failed(err)) {
+			return
+		}
+		copy(val, fullPath, "Username")
+	})
+})
+
+panel.port.on("pass.action.copy-totp", fullPath => {
+	panel.hide()
+	exec.getValue(fullPath, ["TOTP", "OTP"], prefs, (val, status, data, err) => {
+		if (failed(err)) {
+			return
+		}
+		copy(val, fullPath, "TOTP")
+	})
 })
 
 function failed(err) {
@@ -124,7 +121,7 @@ function copy(val, path, name) {
 		clipboard.set("")
 	}, prefs.PASSWORD_STORE_CLIP_TIME * 1000)
 	notifications.notify({
-		title: name + " copied",
-		text: "/" + path,
+		title: name + " for " + path + " copied",
+		text: "Clearing in " + prefs.PASSWORD_STORE_CLIP_TIME + " seconds",
 	})
 }
