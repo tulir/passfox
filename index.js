@@ -74,52 +74,86 @@ panel.port.on("pass.list.get", path =>
 
 panel.port.on("pass.action.copy-password", fullPath => {
 	panel.hide()
-	exec.getPassword(fullPath, prefs, (passwd, status, data, err) => {
-		if (failed(err)) {
-			return
-		}
-		copy(passwd, fullPath, "Password")
-	})
 })
 
-panel.port.on("pass.action.copy-username", fullPath => {
+panel.port.on("pass.action", (action, path, password) => {
 	panel.hide()
-	exec.getValue(fullPath, ["Username", "User", "Email"], prefs, (val, status, data, err) => {
-		if (failed(err)) {
-			return
-		}
-		copy(val, fullPath, "Username")
-	})
+	let fullPath = path.concat([password]).join("/")
+	switch(action) {
+	case "copy-username":
+		copyUsername(fullPath, password)
+		break
+	case "copy-password":
+		copyPassword(fullPath, password)
+		break
+	case "copy-otp":
+		copyOTP(fullPath, password)
+		break
+	}
 })
 
-panel.port.on("pass.action.copy-totp", fullPath => {
-	panel.hide()
-	exec.getValue(fullPath, ["TOTP", "OTP"], prefs, (val, status, data, err) => {
-		if (failed(err)) {
+function copyPassword(fullPath, name) {
+	exec.getPassword(fullPath, prefs, (passwd, data, err) => {
+		if (failed(err, name)) {
 			return
 		}
-		copy(val, fullPath, "TOTP")
+		copy(passwd)
+		notify(name, "Password")
 	})
-})
+}
 
-function failed(err) {
+function copyUsername(fullPath, name) {
+	exec.getValue(fullPath, ["Username", "User", "Email"], prefs, (val, data, err) => {
+		if (failed(err, name)) {
+			return
+		}
+		copy(val)
+		notify(name, "Username")
+	})
+}
+
+function copyOTP(fullPath, name) {
+	exec.getOTP(fullPath, prefs, (otp, expiry, data, err) => {
+		if (failed(err, name)) {
+			return
+		}
+		copy(otp)
+		notifications.notify({
+			title: "OTP for " + name + " copied",
+			text: "Expires in " + expiry + " seconds",
+		})
+	})
+}
+
+function failed(err, fullPath) {
 	if (err.indexOf("gpg: decryption failed") !== -1) {
 		notifications.notify({
 			title: "Failed to decrypt password!",
 			text: err
 		})
 		return true
+	} else if (err.indexOf("Error: No username found") !== -1) {
+		notifications.notify({
+			title: "No username key found in " + fullPath
+		})
+	} else if (err.indexOf("Error: No OTP key found") !== -1) {
+		notifications.notify({
+			title: "No OTP key found in " + fullPath
+		})
 	}
 }
 
-function copy(val, path, name) {
+function copy(val) {
 	clipboard.set(val)
 	setTimeout(() => {
 		clipboard.set("Lorem ipsum dolor sit amet")
 		clipboard.set("")
 	}, prefs.PASSWORD_STORE_CLIP_TIME * 1000)
+}
+
+function notify(passName, objectName) {
 	notifications.notify({
-		title: name + " for " + path + " copied",
+		title: objectName + " for " + passName + " copied",
 		text: "Clearing in " + prefs.PASSWORD_STORE_CLIP_TIME + " seconds",
 	})
 }

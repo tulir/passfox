@@ -50,6 +50,15 @@ function getValue(fullPath, keys, env, callback) {
 				}
 			}
 		}
+		callback("", status, data, "Error: No " + keys[0].toLowerCase()
+			+ " found from " + fullPath.substr(1) + "\n" + err)
+	})
+}
+
+function getOTP(fullPath, env, callback) {
+	pass(["otp", "--raw", fullPath], env, (status, data, err) => {
+		lines = data.split("\n")
+		callback(lines[0], lines[1], status, data, err)
 	})
 }
 
@@ -60,5 +69,6 @@ function getPassword(fullPath, env, callback) {
 }
 
 exports.pass = pass
+exports.getOTP = getOTP
 exports.getValue = getValue
 exports.getPassword = getPassword

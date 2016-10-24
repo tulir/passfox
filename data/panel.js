@@ -26,7 +26,7 @@ function search() {
 }
 
 function action(act) {
-	addon.port.emit("pass.action." + act, path.concat([password]).join(" "))
+	addon.port.emit("pass.action", act, path, password)
 }
 
 function update() {
