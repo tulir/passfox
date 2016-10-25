@@ -1,6 +1,20 @@
 # passFox
 A passwordstore.org extension for Firefox.
 
+## Features
+passFox is at a very early stage, but the basic features work.
+
+### Currently implemented features
+* Listing passwords and directories
+* Basic search (case-insensitive, by file and directory name)
+* Copying passwords, usernames and one-time passwords*
+* Displaying the content of password files
+
+\* OTP currently only with [my pass fork (tulir/pass)](https://github.com/tulir/pass). I haven't been able to find a nice JavaScript OTP library.
+
+### Planned features
+* Autofill?
+
 ## Preview
 Here's some fancy screenshots.
 
