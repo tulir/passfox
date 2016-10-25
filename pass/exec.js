@@ -32,7 +32,7 @@ function pass(args, env, callback) {
 	proc.on("close", code => callback(code, stdout, stderr))
 }
 
-function list(fullPath, env, callback) {
+function list(env, callback) {
 	pass(["list"], env, (status, data, err) => callback(data, err))
 }
 
