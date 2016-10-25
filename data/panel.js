@@ -49,14 +49,17 @@ function passwordClick(name, searchClick) {
 	}
 
 	let pathStr = "/" + path.join("/")
-	if (pathStr.length !== 1 || password.length !== 0) {
+	if (pathStr.length !== 1) {
 		pathStr += "/"
 	}
 	$("#path").text(pathStr + password)
 }
 
 function exitPasswordView() {
-	if ($("#passwords").hasClass("hidden")
+	if (!$("#password-view").hasClass("hidden")) {
+		$("#password-view").addClass("hidden")
+		$("#password-actions").removeClass("hidden")
+	} else if ($("#passwords").hasClass("hidden")
 		|| !$("#password-actions").hasClass("hidden")) {
 		$("#passwords").removeClass("hidden")
 		$("#password-actions").addClass("hidden")
@@ -86,6 +89,12 @@ function addEntry(type, name, isSearchResult) {
 		"</div>"
 	)
 }
+
+addon.port.on("pass.display", data => {
+	$("#password-raw-view").html(data.replace(/\n/g, "<br>"))
+	$("#password-view").removeClass("hidden")
+	$("#password-actions").addClass("hidden")
+})
 
 addon.port.on("pass.search.results", data => {
 	exitPasswordView()

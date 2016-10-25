@@ -32,6 +32,10 @@ function pass(args, env, callback) {
 	proc.on("close", code => callback(code, stdout, stderr))
 }
 
+function get(fullPath, env, callback) {
+	pass(["show", fullPath], env, (status, data, err) => callback(data, err))
+}
+
 function getValue(fullPath, keys, env, callback) {
 	let realKeys = []
 	if (typeof(keys) === "string") {
@@ -58,17 +62,18 @@ function getValue(fullPath, keys, env, callback) {
 function getOTP(fullPath, env, callback) {
 	pass(["otp", "--raw", fullPath], env, (status, data, err) => {
 		lines = data.split("\n")
-		callback(lines[0], lines[1], status, data, err)
+		callback(lines[0], lines[1], data, err)
 	})
 }
 
 function getPassword(fullPath, env, callback) {
 	pass(["show", fullPath], env, (status, data, err) => {
-		callback(data.split("\n")[0], status, data, err)
+		callback(data.split("\n")[0], data, err)
 	})
 }
 
 exports.pass = pass
+exports.get = get
 exports.getOTP = getOTP
 exports.getValue = getValue
 exports.getPassword = getPassword

@@ -34,7 +34,7 @@
 	height: 1.25rem;
 }
 
-.passwords, .password-actions {
+.passwords, .password-actions, .password-view {
 	position: absolute;
 	top: 3.5rem;
 	right: 0;
@@ -45,6 +45,8 @@
 
 	margin: 0;
 	padding: 0;
+
+	background-color: inherit;
 
 	.entry {
 		padding: .25rem;
@@ -64,6 +66,10 @@
 
 	.directory {
 		font-weight: bold;
+	}
+
+	.raw-view {
+		font-family: monospace;
 	}
 }
 

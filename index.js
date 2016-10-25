@@ -89,6 +89,11 @@ panel.port.on("pass.action", (action, path, password) => {
 	case "copy-otp":
 		copyOTP(fullPath, password)
 		break
+	case "display":
+		exec.get(fullPath, prefs, (data, err) =>
+			panel.port.emit("pass.display", data)
+		)
+		break
 	}
 })
 
