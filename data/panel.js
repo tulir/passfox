@@ -107,7 +107,7 @@ addon.port.on("pass.edit", data => {
 })
 
 addon.port.on("pass.display", data => {
-	$("#password-raw-view").val(data.replace(/\n/g, "<br>"))
+	$("#password-raw-view").html(data.replace(/\n/g, "<br>"))
 	$("#password-view").removeClass("hidden")
 })
 
