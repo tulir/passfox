@@ -34,7 +34,6 @@ function update() {
 }
 
 function passwordClick(name, searchClick) {
-	$("#passwords").addClass("hidden")
 	$("#password-actions").removeClass("hidden")
 	if (searchClick) {
 		// Remove prefix slash and split into a path array.
@@ -58,10 +57,7 @@ function passwordClick(name, searchClick) {
 function exitPasswordView() {
 	if (!$("#password-view").hasClass("hidden")) {
 		$("#password-view").addClass("hidden")
-		$("#password-actions").removeClass("hidden")
-	} else if ($("#passwords").hasClass("hidden")
-		|| !$("#password-actions").hasClass("hidden")) {
-		$("#passwords").removeClass("hidden")
+	} else if (!$("#password-actions").hasClass("hidden")) {
 		$("#password-actions").addClass("hidden")
 		addon.port.emit("pass.list.get", path)
 	}
@@ -93,7 +89,6 @@ function addEntry(type, name, isSearchResult) {
 addon.port.on("pass.display", data => {
 	$("#password-raw-view").html(data.replace(/\n/g, "<br>"))
 	$("#password-view").removeClass("hidden")
-	$("#password-actions").addClass("hidden")
 })
 
 addon.port.on("pass.search.results", data => {

@@ -1,5 +1,10 @@
+body {
+	background-color: white;
+}
+
 .top-bar {
 	position: fixed;
+	z-index: 10;
 	top: 0;
 	right: 0;
 	left: 0;
@@ -27,6 +32,7 @@
 
 .path {
 	position: fixed;
+	z-index: 11;
 	top: 2.25rem;
 	right: 0;
 	left: 0;
@@ -46,7 +52,7 @@
 	margin: 0;
 	padding: 0;
 
-	background-color: inherit;
+	background-color: white;
 
 	.entry {
 		padding: .25rem;
@@ -73,12 +79,25 @@
 	}
 }
 
+.passwords {
+	z-index: 5;
+}
+
+.password-actions {
+	z-index: 6;
+}
+
+.password-view {
+	z-index: 7;
+}
+
 .hidden {
 	display: none !important;
 }
 
 .bottom-bar {
 	position: fixed;
+	z-index: 10;
 	right: 0;
 	bottom: 0;
 	left: 0;
