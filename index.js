@@ -56,7 +56,11 @@ let button = require("sdk/ui").ToggleButton({
 })
 
 function update(path) {
-	exec.pass(["ls"], prefs, (status, data, err) => {
+	exec.list(prefs, (data, err) => {
+		if (err.indexOf("Error: password store is empty") !== -1) {
+			panel.port.emit("pass.empty")
+			return
+		}
 		store.parseFull(data.split("\n"))
 		panel.port.emit("pass.list", store.dynamicGet(path))
 	})
@@ -71,10 +75,6 @@ panel.port.on("pass.search", query =>
 panel.port.on("pass.list.get", path =>
 	panel.port.emit("pass.list", store.dynamicGet(path))
 )
-
-panel.port.on("pass.action.copy-password", fullPath => {
-	panel.hide()
-})
 
 panel.port.on("pass.action", (action, path, password) => {
 	let fullPath = path.concat([password]).join("/")

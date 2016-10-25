@@ -32,6 +32,10 @@ function pass(args, env, callback) {
 	proc.on("close", code => callback(code, stdout, stderr))
 }
 
+function list(fullPath, env, callback) {
+	pass(["list"], env, (status, data, err) => callback(data, err))
+}
+
 function get(fullPath, env, callback) {
 	pass(["show", fullPath], env, (status, data, err) => callback(data, err))
 }
@@ -72,8 +76,8 @@ function getPassword(fullPath, env, callback) {
 	})
 }
 
-exports.pass = pass
 exports.get = get
+exports.list = list
 exports.getOTP = getOTP
 exports.getValue = getValue
 exports.getPassword = getPassword
