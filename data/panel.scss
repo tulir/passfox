@@ -115,17 +115,15 @@ body {
 	overflow-y: hidden;
 
 	.edit-view {
-		position: absolute;
-		top: 1;
-		right: 1;
-		bottom: 2rem;
-		left: 1;
+		overflow-y: scroll;
 
 		box-sizing: border-box;
 		width: 100%;
-		height: 100%;
+		height: calc(100% - 2.1rem);
 
 		resize: none;
+
+		border: none;
 	}
 
 	.action {
