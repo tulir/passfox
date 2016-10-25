@@ -3,7 +3,7 @@ images/
 .eslintrc.json
 .sass-lint.yml
 *.scss
-*.xpi
 .gitignore
 .jpmignore
 Makefile
+dist/

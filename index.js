@@ -68,6 +68,7 @@ panel.port.on("pass.list.get", path =>
 )
 
 panel.port.on("pass.action", (action, path, password) => {
+	panel.hide()
 	let fullPath = path.concat([password]).join("/")
 	switch(action) {
 	case "copy-username":
@@ -81,19 +82,19 @@ panel.port.on("pass.action", (action, path, password) => {
 		break
 	case "display":
 	case "edit":
-		exec.get(fullPath, (data, err) =>
+		exec.get(fullPath, (data, err) => {
 			panel.port.emit("pass." + action, data)
-		)
+			panel.show({position: button})
+		})
 		return
 	case "delete":
 		console.error("Deleting passwords isn't implemented")
 		break
 	}
-	panel.hide()
 })
 
 function copyPassword(fullPath, name) {
-	exec.getPassword(fullPath, (passwd, data, err) => {
+	exec.getPassword(fullPath, (passwd, err) => {
 		if (failed(err, name)) {
 			return
 		}
@@ -103,7 +104,7 @@ function copyPassword(fullPath, name) {
 }
 
 function copyUsername(fullPath, name) {
-	exec.getValue(fullPath, ["Username", "User", "Email"], (val, data, err) => {
+	exec.getValue(fullPath, ["Username", "User", "Email"], (val, err) => {
 		if (failed(err, name)) {
 			return
 		}
@@ -113,7 +114,7 @@ function copyUsername(fullPath, name) {
 }
 
 function copyOTP(fullPath, name) {
-	exec.getOTP(fullPath, (otp, expiry, data, err) => {
+	exec.getOTP(fullPath, (otp, expiry, err) => {
 		if (failed(err, name)) {
 			return
 		}

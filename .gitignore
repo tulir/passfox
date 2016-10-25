@@ -1,4 +1,4 @@
 *.css
 .sass-lint.yml
 .eslintrc.json
-*.xpi
+dist/

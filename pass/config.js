@@ -13,8 +13,16 @@
 
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+/**
+ * Configuration storage module
+ *
+ * @module pass/config
+ */
 let { env } = require("sdk/system/environment")
 
+/**
+ * The environment values to use when calling pass.
+ */
 exports.environment = {
 	PASSWORD_STORE_DIR: env.HOME + "/.password-store",
 	GNUPGHOME: env.HOME + "/.gnupg",
@@ -23,6 +31,9 @@ exports.environment = {
 	PATH: env.PATH
 }
 
+/**
+ * User preferences.
+ */
 exports.prefs = {
 	passExec: "/usr/bin/pass",
 	clipTime: 10
