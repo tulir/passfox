@@ -1,0 +1,9 @@
+images/
+.git
+.eslintrc.json
+.sass-lint.yml
+*.scss
+*.xpi
+.gitignore
+.jpmignore
+Makefile
