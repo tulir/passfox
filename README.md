@@ -1,6 +1,8 @@
 # passFox
 A passwordstore.org extension for Firefox.
 
+You can find signed packages in the [Release section](https://github.com/tulir/passfox/releases)
+
 ## Features
 passFox is at a very early stage, but the basic features work.
 
