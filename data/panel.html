@@ -22,10 +22,17 @@
 		<div class="action entry" onClick="action('copy-username')">Copy Username</div>
 		<div class="action entry" onClick="action('copy-otp')">Copy an OTP</div>
 		<div class="action entry" onClick="action('display')">View Contents</div>
+		<div class="action entry" onClick="action('edit')">Edit Contents</div>
+		<div class="action entry" onClick="action('delete')">Delete</div>
 	</div>
 	<div class="password-view hidden" id="password-view">
 		<div class="action entry" onClick="exitPasswordView()">..</div>
 		<div class="raw-view" id="password-raw-view"></div>
+	</div>
+	<div class="password-edit hidden" id="password-edit">
+		<textarea class="raw-view edit-view" id="password-raw-edit"></textarea>
+		<div class="action left" onClick="cancelEdit()">Cancel</div>
+		<div class="action right" onClick="saveEdit()">Save</div>
 	</div>
 
 	<div class="bottom-bar">

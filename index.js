@@ -91,10 +91,14 @@ panel.port.on("pass.action", (action, path, password) => {
 		copyOTP(fullPath, password)
 		break
 	case "display":
+	case "edit":
 		exec.get(fullPath, prefs, (data, err) =>
-			panel.port.emit("pass.display", data)
+			panel.port.emit("pass." + action, data)
 		)
 		return
+	case "delete":
+		console.error("Deleting passwords isn't implemented")
+		break
 	}
 	panel.hide()
 })

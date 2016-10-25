@@ -90,8 +90,24 @@ function init() {
 	addon.port.emit("pass.init")
 }
 
+function cancelEdit() {
+	$("#password-edit").addClass("hidden")
+	$("#password-raw-edit").empty()
+}
+
+function finishEdit() {
+	let text = $("#password-raw-edit").val()
+	cancelEdit()
+	// TODO save password
+}
+
+addon.port.on("pass.edit", data => {
+	$("#password-raw-edit").val(data)
+	$("#password-edit").removeClass("hidden")
+})
+
 addon.port.on("pass.display", data => {
-	$("#password-raw-view").html(data.replace(/\n/g, "<br>"))
+	$("#password-raw-view").val(data.replace(/\n/g, "<br>"))
 	$("#password-view").removeClass("hidden")
 })
 
