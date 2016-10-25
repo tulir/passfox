@@ -18,9 +18,9 @@
  *
  * @module pass/exec
  */
-let child_process = require("sdk/system/child_process")
-let { emit } = require("sdk/event/core")
-let config = require("pass/config")
+const child_process = require("sdk/system/child_process")
+const { emit } = require("sdk/event/core")
+const config = require("pass/config")
 
 /**
  * The callback for functions that give stdout and stderr.

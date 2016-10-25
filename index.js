@@ -13,13 +13,13 @@
 
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-let self = require("sdk/self")
-let pass = require("pass/store")
-let exec = require("pass/exec")
-let config = require("pass/config")
-let clipboard = require("sdk/clipboard")
-let { setTimeout } = require('sdk/timers')
-let notifications = require("sdk/notifications")
+const self = require("sdk/self")
+const pass = require("pass/store")
+const exec = require("pass/exec")
+const config = require("pass/config")
+const clipboard = require("sdk/clipboard")
+const { setTimeout } = require('sdk/timers')
+const notifications = require("sdk/notifications")
 
 let store = new pass.PasswordStore()
 

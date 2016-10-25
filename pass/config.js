@@ -18,7 +18,7 @@
  *
  * @module pass/config
  */
-let { env } = require("sdk/system/environment")
+const { env } = require("sdk/system/environment")
 
 /**
  * The environment values to use when calling pass.
