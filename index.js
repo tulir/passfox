@@ -26,7 +26,7 @@ let panel = require("sdk/panel").Panel({
 	contentURL: "./panel.html",
 	onHide: () => button.state('window', {checked: false}),
 	height: 320,
-	width: 432
+	width: 440 // 20rem * 27.5rem
 })
 
 let button = require("sdk/ui").ToggleButton({
