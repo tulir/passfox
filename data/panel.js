@@ -86,6 +86,10 @@ function addEntry(type, name, isSearchResult) {
 	)
 }
 
+function init() {
+	addon.port.emit("pass.init")
+}
+
 addon.port.on("pass.display", data => {
 	$("#password-raw-view").html(data.replace(/\n/g, "<br>"))
 	$("#password-view").removeClass("hidden")

@@ -68,6 +68,8 @@ function update(path) {
 
 panel.port.on("pass.update", update)
 
+panel.port.on("pass.init", () => exec.init(prefs, () => update([])))
+
 panel.port.on("pass.search", query =>
 	panel.port.emit("pass.search.results", store.search(query))
 )

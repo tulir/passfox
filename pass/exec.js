@@ -32,6 +32,10 @@ function pass(args, env, callback) {
 	proc.on("close", code => callback(code, stdout, stderr))
 }
 
+function init(env, callback) {
+	pass(["init"], env, (status, data, err) => callback())
+}
+
 function list(env, callback) {
 	pass(["list"], env, (status, data, err) => callback(data, err))
 }
