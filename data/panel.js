@@ -129,3 +129,13 @@ addon.port.on("pass.list", data => {
 		}
 	}
 })
+
+addon.port.on("pass.empty", () => {
+	$("#passwords").html("\
+		<div class='init-wrap'> \
+			<button class='init-store' onClick='init()'> \
+				Initialize Password Store \
+			</button> \
+		</div> \
+	")
+})
