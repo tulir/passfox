@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 let child_process = require("sdk/system/child_process")
+let config = require("pass/config")
 
 /**
  * Run the Password Store script
@@ -22,8 +23,10 @@ let child_process = require("sdk/system/child_process")
  * @param extraArgs An array containing the arguments for pass.
  * @param callback The callback function to call after execution.
  */
-function pass(args, env, callback) {
-	let proc = child_process.spawn("/usr/bin/pass", args, {env: env})
+function pass(args, callback) {
+	let proc = child_process.spawn(
+		config.prefs.passExec, args, {env: config.environment}
+	)
 	let stdout = ""
 	let stderr = ""
 	proc.stdout.on("data", data => stdout += data)
@@ -31,19 +34,19 @@ function pass(args, env, callback) {
 	proc.on("close", code => callback(code, stdout, stderr))
 }
 
-function init(env, callback) {
-	pass(["init"], env, (status, data, err) => callback())
+function init(callback) {
+	pass(["init"], (status, data, err) => callback())
 }
 
-function list(env, callback) {
-	pass(["list"], env, (status, data, err) => callback(data, err))
+function list(callback) {
+	pass(["list"], (status, data, err) => callback(data, err))
 }
 
-function get(fullPath, env, callback) {
-	pass(["show", fullPath], env, (status, data, err) => callback(data, err))
+function get(fullPath, callback) {
+	pass(["show", fullPath], (status, data, err) => callback(data, err))
 }
 
-function getValue(fullPath, keys, env, callback) {
+function getValue(fullPath, keys, callback) {
 	let realKeys = []
 	if (typeof(keys) === "string") {
 		realKeys.push(keys.toLowerCase() + ": ")
@@ -52,7 +55,7 @@ function getValue(fullPath, keys, env, callback) {
 			realKeys.push(key.toLowerCase() + ": ")
 		}
 	}
-	pass(["show", fullPath], env, (status, data, err) => {
+	pass(["show", fullPath], (status, data, err) => {
 		for (line of data.split("\n")) {
 			for (key of realKeys) {
 				if (line.toLowerCase().startsWith(key)) {
@@ -66,15 +69,15 @@ function getValue(fullPath, keys, env, callback) {
 	})
 }
 
-function getOTP(fullPath, env, callback) {
-	pass(["otp", "--raw", fullPath], env, (status, data, err) => {
+function getOTP(fullPath, callback) {
+	pass(["otp", "--raw", fullPath], (status, data, err) => {
 		lines = data.split("\n")
 		callback(lines[0], lines[1], data, err)
 	})
 }
 
-function getPassword(fullPath, env, callback) {
-	pass(["show", fullPath], env, (status, data, err) => {
+function getPassword(fullPath, callback) {
+	pass(["show", fullPath], (status, data, err) => {
 		callback(data.split("\n")[0], data, err)
 	})
 }

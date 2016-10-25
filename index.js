@@ -16,23 +16,12 @@
 let self = require("sdk/self")
 let pass = require("pass/store")
 let exec = require("pass/exec")
+let config = require("pass/config")
 let clipboard = require("sdk/clipboard")
 let { setTimeout } = require('sdk/timers')
 let notifications = require("sdk/notifications")
-let { env } = require("sdk/system/environment")
 
 let store = new pass.PasswordStore()
-let passEnv = {
-	PASSWORD_STORE_DIR: env.HOME + "/.password-store",
-	GNUPGHOME: env.HOME + "/.gnupg",
-	GPG_AGENT_INFO: env.GPG_AGENT_INFO,
-	DISPLAY: (env.DISPLAY !== undefined ? env.DISPLAY : ":0.0"),
-	PATH: env.PATH
-}
-
-let prefs = {
-	clipTime: 10
-}
 
 let panel = require("sdk/panel").Panel({
 	contentURL: "./panel.html",
@@ -56,7 +45,7 @@ let button = require("sdk/ui").ToggleButton({
 })
 
 function update(path) {
-	exec.list(passEnv, (data, err) => {
+	exec.list((data, err) => {
 		if (err.indexOf("Error: password store is empty") !== -1) {
 			panel.port.emit("pass.empty")
 			return
@@ -68,7 +57,7 @@ function update(path) {
 
 panel.port.on("pass.update", update)
 
-panel.port.on("pass.init", () => exec.init(passEnv, () => update([])))
+panel.port.on("pass.init", () => exec.init(() => update([])))
 
 panel.port.on("pass.search", query =>
 	panel.port.emit("pass.search.results", store.search(query))
@@ -92,7 +81,7 @@ panel.port.on("pass.action", (action, path, password) => {
 		break
 	case "display":
 	case "edit":
-		exec.get(fullPath, passEnv, (data, err) =>
+		exec.get(fullPath, (data, err) =>
 			panel.port.emit("pass." + action, data)
 		)
 		return
@@ -104,7 +93,7 @@ panel.port.on("pass.action", (action, path, password) => {
 })
 
 function copyPassword(fullPath, name) {
-	exec.getPassword(fullPath, passEnv, (passwd, data, err) => {
+	exec.getPassword(fullPath, (passwd, data, err) => {
 		if (failed(err, name)) {
 			return
 		}
@@ -114,7 +103,7 @@ function copyPassword(fullPath, name) {
 }
 
 function copyUsername(fullPath, name) {
-	exec.getValue(fullPath, ["Username", "User", "Email"], passEnv, (val, data, err) => {
+	exec.getValue(fullPath, ["Username", "User", "Email"], (val, data, err) => {
 		if (failed(err, name)) {
 			return
 		}
@@ -124,7 +113,7 @@ function copyUsername(fullPath, name) {
 }
 
 function copyOTP(fullPath, name) {
-	exec.getOTP(fullPath, passEnv, (otp, expiry, data, err) => {
+	exec.getOTP(fullPath, (otp, expiry, data, err) => {
 		if (failed(err, name)) {
 			return
 		}
@@ -159,12 +148,12 @@ function copy(val) {
 	setTimeout(() => {
 		clipboard.set("Lorem ipsum dolor sit amet")
 		clipboard.set("")
-	}, prefs.clipTime * 1000)
+	}, config.prefs.clipTime * 1000)
 }
 
 function notify(passName, objectName) {
 	notifications.notify({
 		title: objectName + " for " + passName + " copied",
-		text: "Clearing in " + prefs.clipTime + " seconds",
+		text: "Clearing in " + config.prefs.clipTime + " seconds",
 	})
 }
