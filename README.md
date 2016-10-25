@@ -18,7 +18,7 @@ passFox is at a very early stage, but the basic features work.
 * Autofill?
 
 ## Preview
-Here's some fancy screenshots.
+Here are some fancy screenshots.
 
 #### List view
 ![List view](images/main-view.png)
