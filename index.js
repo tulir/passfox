@@ -77,7 +77,6 @@ panel.port.on("pass.action.copy-password", fullPath => {
 })
 
 panel.port.on("pass.action", (action, path, password) => {
-	panel.hide()
 	let fullPath = path.concat([password]).join("/")
 	switch(action) {
 	case "copy-username":
@@ -93,8 +92,9 @@ panel.port.on("pass.action", (action, path, password) => {
 		exec.get(fullPath, prefs, (data, err) =>
 			panel.port.emit("pass.display", data)
 		)
-		break
+		return
 	}
+	panel.hide()
 })
 
 function copyPassword(fullPath, name) {
