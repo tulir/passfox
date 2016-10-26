@@ -101,6 +101,10 @@ function finishEdit() {
 	// TODO save password
 }
 
+addon.port.on("pass.inserted", () => {
+	$("#password-raw-edit").addClass("saved")
+})
+
 addon.port.on("pass.edit", data => {
 	$("#password-raw-edit").val(data)
 	$("#password-edit").removeClass("hidden")
