@@ -99,7 +99,7 @@ exports.insert = function(fullPath, data, callback) {
 		{env: config.environment}
 	)
 	for (line of data.split("\n")) {
-		emit(proc.stdin, "data", line)
+		emit(proc.stdin, "data", line + "\n")
 	}
 	emit(proc.stdin, 'end')
 	proc.on("close", () => callback())
