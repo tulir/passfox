@@ -29,8 +29,11 @@ Here are some fancy screenshots.
 #### Password action view
 ![Entry view](images/entry-view.png)
 
-#### Search view (password)
-![Search (password)](images/search-password.png)
+#### Search view
+![Search view](images/search-view.png)
 
-#### Search view (directory)
-![Search (directory)](images/search-directory.png)
+#### View view
+![View view](images/view-view.png)
+
+#### Edit view
+![Edit view](images/edit-view.png)
