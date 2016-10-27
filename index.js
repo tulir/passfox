@@ -93,7 +93,10 @@ panel.port.on("pass.action", (action, path, password) => {
 		})
 		return
 	case "delete":
-		console.error("Deleting passwords isn't implemented")
+		exec.delete(fullPath, () => {
+			update(path)
+			panel.show({position: button})
+		})
 		break
 	}
 })

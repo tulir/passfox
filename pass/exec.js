@@ -106,6 +106,16 @@ exports.insert = function(fullPath, data, callback) {
 }
 
 /**
+ * Delete a password.
+ *
+ * @param {string} fullPath The path to delete.
+ * @param {stdioCallback} callback The function to call after execution.
+ */
+exports.delete = function(fullPath, callback) {
+	pass(["rm", fullPath], (status, data, err) => callback(data, err))
+}
+
+/**
  * The callback for {@link #getValue}
  *
  * @callback valueCallback
