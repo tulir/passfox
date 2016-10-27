@@ -24,8 +24,7 @@ const { env } = require("sdk/system/environment")
  * The environment values to use when calling pass.
  */
 exports.environment = {
-	PASSWORD_STORE_DIR: env.HOME + "/.password-store",
-	GNUPGHOME: env.HOME + "/.gnupg",
+	HOME: env.HOME,
 	GPG_AGENT_INFO: env.GPG_AGENT_INFO,
 	DISPLAY: (env.DISPLAY !== undefined ? env.DISPLAY : ":0.0"),
 	PATH: env.PATH
