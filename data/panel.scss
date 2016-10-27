@@ -147,7 +147,11 @@ body {
 
 		resize: none;
 
-		border: none;
+		border: 1px solid white;
+
+		&.saved {
+			border: 1px solid #50D367;
+		}
 	}
 
 	.action {

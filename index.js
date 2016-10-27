@@ -66,8 +66,10 @@ panel.port.on("pass.list.get", path =>
 	panel.port.emit("pass.list", store.dynamicGet(path))
 )
 
-panel.port.on("pass.insert", (fullPath, data) =>
-	exec.insert(fullPath, data, () => panel.port.emit("pass.insert.done"))
+panel.port.on("pass.insert", (path, password, data) =>
+	exec.insert(path.concat([password]).join(" "), data, () =>
+		panel.port.emit("pass.insert.done")
+	)
 )
 
 panel.port.on("pass.action", (action, path, password) => {

@@ -95,14 +95,22 @@ function cancelEdit() {
 	$("#password-raw-edit").empty()
 }
 
-function finishEdit() {
-	let text = $("#password-raw-edit").val()
-	cancelEdit()
-	// TODO save password
+function saveEdit() {
+	addon.port.emit(
+		"pass.insert",
+		path, password,
+		$("#password-raw-edit").val()
+	)
 }
 
-addon.port.on("pass.inserted", () => {
+function editText() {
+	$("#password-raw-edit").removeClass("saved")
+	$("#save-edit").text("Save")
+}
+
+addon.port.on("pass.insert.done", () => {
 	$("#password-raw-edit").addClass("saved")
+	$("#save-edit").text("Saved ✓")
 })
 
 addon.port.on("pass.edit", data => {
