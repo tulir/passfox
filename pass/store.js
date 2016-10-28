@@ -28,6 +28,17 @@ class PasswordStore {
 	 */
 	constructor() {
 		this.store = new PasswordDirectory()
+		this.loaded = false
+	}
+
+	/**
+	 * Check whether or not the password store tree has been loaded into this
+	 * object at least once using parseFull.
+	 *
+	 * @return {boolean} loaded The value.
+	 */
+	isLoaded() {
+		return this.loaded
 	}
 
 	/**
@@ -35,7 +46,7 @@ class PasswordStore {
 	 * exist, it will be created.
 	 *
 	 * @param {PathTree} tree An array with the name of each section as a string.
-	 * @return {PasswordDirectory} The tree map
+	 * @return {PasswordDirectory} tree The tree map
 	 */
 	dynamicGet(tree) {
 		let obj = this.store
@@ -100,6 +111,7 @@ class PasswordStore {
 			tree.exitToDepth(nextDepth)
 		}
 		this.fixTopLevel()
+		this.loaded = true
 	}
 
 	/**

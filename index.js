@@ -36,7 +36,7 @@ let button = require("sdk/ui").ToggleButton({
 	onClick: state => {
 		if (state.checked) {
 			panel.show({position: button})
-			if (JSON.stringify(store.store) === "{}") {
+			if (!store.loaded) {
 				update([])
 			}
 		}
