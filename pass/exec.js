@@ -174,8 +174,8 @@ exports.getOTP = function(fullPath, callback) {
 		let otp = ""
 		let expiry = 0
 		if (lines.length > 1) {
-			let otp = lines[0]
-			let expiry = parseInt(lines[1])
+			otp = lines[0]
+			expiry = parseInt(lines[1])
 		}
 		callback(otp, expiry, err)
 	})
