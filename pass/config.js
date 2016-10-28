@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 /**
- * Configuration storage module
+ * Basic environment and user preference sharing module.
  *
  * @module pass/config
  */

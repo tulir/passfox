@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 /**
- * Pass script execution module.
+ * Stateless pass script execution functions.
  *
  * @module pass/exec
  */

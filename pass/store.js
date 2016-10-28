@@ -14,7 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 /**
- * Pass tree parsing and handling module.
+ * Pass tree parsing and searching system.
+ * <br>
+ * Note: This module doesn't handle executing anything.
+ * See {@link pass/exec} for the pass script execution code.
  *
  * @module pass/store
  */
