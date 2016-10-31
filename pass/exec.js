@@ -116,7 +116,7 @@ exports.delete = function(fullPath, callback) {
 }
 
 /**
- * The callback for {@link #getValue}
+ * The callback for {@link #getValue}.
  *
  * @callback valueCallback
  * @param {string} value The value (empty if none found).

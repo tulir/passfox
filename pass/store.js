@@ -49,7 +49,7 @@ class PasswordStore {
 	 * exist, it will be created.
 	 *
 	 * @param {PathTree} tree An array with the name of each section as a string.
-	 * @return {PasswordDirectory} tree The tree map
+	 * @return {PasswordDirectory} tree The tree map.
 	 */
 	dynamicGet(tree) {
 		let obj = this.store
@@ -202,7 +202,7 @@ class PathTree {
 	/**
 	 * Enter the given section
 	 *
-	 * @param {string} section The section to enter
+	 * @param {string} section The section to enter.
 	 * @return {PathTree} this This object to allow chaining.
 	 */
 	enter(section) {
