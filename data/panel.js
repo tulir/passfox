@@ -13,65 +13,84 @@
 
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-var path = []
-var password = ""
+let path = {
+	dir: [],
+	password: "",
+	toUIString() {
+		return "/" + this.toString()
+	},
+	toString() {
+		return this.dir.concat([this.password]).join("/")
+	},
+	parseUIString(str) {
+		if (str.endsWith("/")) {
+			this.dir = str.substr(1, str.length - 2).split("/")
+		} else {
+			this.dir = str.substr(1).split("/")
+			this.password = this.dir[this.dir.length - 1]
+			this.dir = this.dir.slice(0, this.dir.length - 1)
+		}
+	},
+	exit() {
+		this.dir = this.dir.slice(0, this.dir.length - 1)
+	},
+	enter(newDir) {
+		this.dir.push(newDir)
+	}
+}
 
 $("#search").keyup(function() {
 	let query = $(this).val()
 	if (query.length === 0) {
-		addon.port.emit("pass.list.get", path)
+		addon.port.emit("pass.list.get", path.dir)
 	} else {
 		addon.port.emit("pass.search", query)
 	}
 })
 
 $(".action.entry").click(function() {
-	addon.port.emit("pass.action", $(this).attr("action"), path, password)
+	addon.port.emit("pass.action", $(this).attr("action"), path.dir, path.password)
 })
 
-$("#update").click(() => addon.port.emit("pass.update", path))
+$("#new-password").click(() => {
+
+})
+
+$("#update").click(() => addon.port.emit("pass.update", path.dir))
 
 $(".exit.entry").click(exitPasswordView)
 
 function exitPasswordView() {
 	if (!$("#password-view").hasClass("hidden")) {
 		$("#password-view").addClass("hidden")
+		$("#path").text(path.toUIString())
 	} else if (!$("#password-actions").hasClass("hidden")) {
 		$("#password-actions").addClass("hidden")
-		addon.port.emit("pass.list.get", path)
+		path.password = ""
+		$("#path").text(path.toUIString())
+		addon.port.emit("pass.list.get", path.dir)
 	}
 }
 
 function passwordClick(name, searchClick) {
 	$("#password-actions").removeClass("hidden")
 	if (searchClick) {
-		// Remove prefix slash and split into a path array.
-		path = name.substr(1).split("/")
-		// Extract the last object of the path (the password).
-		password = path[path.length-1]
-		// Remove the last object (the password) from the path, so only the
-		// directories are left in the path array.
-		path = path.slice(0, path.length-1)
+		path.parseUIString(name)
 	} else {
-		password = name
+		path.password = name
 	}
 
-	let pathStr = "/" + path.join("/")
-	if (pathStr.length !== 1) {
-		pathStr += "/"
-	}
-	$("#path").text(pathStr + password)
+	$("#path").text(path.toUIString())
 }
 function directoryClick(name, searchClick) {
 	if (searchClick) {
-		// Remove the prefix and suffix slash and split into a path array.
-		path = name.substr(1, name.length-2).split("/")
+		path.parseUIString(name)
 	} else if (name === "..") {
-		path = path.slice(0, path.length - 1)
+		path.exit()
 	} else if (name.length > 0) {
-		path[path.length] = name
+		path.enter(name)
 	}
-	addon.port.emit("pass.list.get", path)
+	addon.port.emit("pass.list.get", path.dir)
 }
 
 function addEntry(type, name, isSearchResult) {
@@ -92,12 +111,13 @@ function init() {
 $("#cancel-edit").click(() => {
 	$("#password-edit").addClass("hidden")
 	$("#password-raw-edit").empty()
+	$("#path").text(path.toUIString())
 })
 
 $("#save-edit").click(() =>
 	addon.port.emit(
 		"pass.insert",
-		path, password,
+		path.dir, path.password,
 		$("#password-raw-edit").val()
 	)
 )
@@ -114,43 +134,43 @@ addon.port.on("pass.insert.done", () => {
 
 addon.port.on("pass.edit", data => {
 	$("#password-raw-edit").val(data)
+	$("#path").text("Editing " + path.toUIString())
 	$("#password-edit").removeClass("hidden")
 })
 
 addon.port.on("pass.display", data => {
 	$("#password-raw-view").html(data.replace(/\n/g, "<br>"))
+	$("#path").text("Viewing " + path.toUIString())
 	$("#password-view").removeClass("hidden")
 })
 
 addon.port.on("pass.search.results", data => {
 	exitPasswordView()
 	$("#passwords").empty()
+	$("#passwords").addClass("search-results")
 
 	if (data.length === 0) {
 		$("#path").text("No results!")
 	} else if (data.length > 20) {
 		$("#path").text("Too many results!")
-	}
-
-	$("#path").text("Search results:")
-	for (key of data) {
-		addEntry(key.type, key.path, true)
+	} else {
+		$("#path").text("Search results")
+		for (key of data) {
+			addEntry(key.type, key.path, true)
+		}
 	}
 })
 
 addon.port.on("pass.list", data => {
 	exitPasswordView()
 	$("#passwords").empty()
+	$("#passwords").removeClass("search-results")
 
-	if (path.length > 0) {
+	if (path.dir.length > 0) {
 		addEntry("directory", "..")
 	}
 
-	let pathStr = "/" + path.join("/")
-	if (pathStr.length !== 1) {
-		pathStr += "/"
-	}
-	$("#path").text(pathStr)
+	$("#path").text(path.toUIString())
 
 	for (let key in data) {
 		if (typeof(data[key]) === "string") {

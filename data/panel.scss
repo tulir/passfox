@@ -81,6 +81,10 @@ body {
 		background-color: #ADADAD;
 	}
 
+	.password-list-container.search-results + .new-password {
+		display: none;
+	}
+
 	.new-password {
 		font-style: italic;
 	}
