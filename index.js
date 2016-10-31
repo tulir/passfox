@@ -141,6 +141,11 @@ function failed(err, fullPath) {
 			text: err
 		})
 		return true
+	} else if (err.indexOf("is not in the password store.") !== -1) {
+		notifications.notify({
+			title: "Password not found",
+			text: "There is no password at " + fullPath
+		})
 	} else if (err.indexOf("Error: No username found") !== -1) {
 		notifications.notify({
 			title: "No username key found in " + fullPath
