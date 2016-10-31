@@ -16,21 +16,30 @@
 var path = []
 var password = ""
 
-function search() {
-	let query = $("#search").val()
+$("#search").keyup(function() {
+	let query = $(this).val()
 	if (query.length === 0) {
 		addon.port.emit("pass.list.get", path)
 	} else {
 		addon.port.emit("pass.search", query)
 	}
-}
+})
 
-function action(act) {
-	addon.port.emit("pass.action", act, path, password)
-}
+$(".action.entry").click(function() {
+	addon.port.emit("pass.action", $(this).attr("action"), path, password)
+})
 
-function update() {
-	addon.port.emit("pass.update", path)
+$("#update").click(() => addon.port.emit("pass.update", path))
+
+$(".exit.entry").click(exitPasswordView)
+
+function exitPasswordView() {
+	if (!$("#password-view").hasClass("hidden")) {
+		$("#password-view").addClass("hidden")
+	} else if (!$("#password-actions").hasClass("hidden")) {
+		$("#password-actions").addClass("hidden")
+		addon.port.emit("pass.list.get", path)
+	}
 }
 
 function passwordClick(name, searchClick) {
@@ -53,16 +62,6 @@ function passwordClick(name, searchClick) {
 	}
 	$("#path").text(pathStr + password)
 }
-
-function exitPasswordView() {
-	if (!$("#password-view").hasClass("hidden")) {
-		$("#password-view").addClass("hidden")
-	} else if (!$("#password-actions").hasClass("hidden")) {
-		$("#password-actions").addClass("hidden")
-		addon.port.emit("pass.list.get", path)
-	}
-}
-
 function directoryClick(name, searchClick) {
 	if (searchClick) {
 		// Remove the prefix and suffix slash and split into a path array.
@@ -90,23 +89,23 @@ function init() {
 	addon.port.emit("pass.init")
 }
 
-function cancelEdit() {
+$("#cancel-edit").click(() => {
 	$("#password-edit").addClass("hidden")
 	$("#password-raw-edit").empty()
-}
+})
 
-function saveEdit() {
+$("#save-edit").click(() =>
 	addon.port.emit(
 		"pass.insert",
 		path, password,
 		$("#password-raw-edit").val()
 	)
-}
+)
 
-function editText() {
+$("#password-raw-edit").keydown(() => {
 	$("#password-raw-edit").removeClass("saved")
 	$("#save-edit").text("Save")
-}
+})
 
 addon.port.on("pass.insert.done", () => {
 	$("#password-raw-edit").addClass("saved")
