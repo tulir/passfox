@@ -4,7 +4,7 @@ A passwordstore.org extension for Firefox.
 You can find signed packages in the [Release section](https://github.com/tulir/passfox/releases)
 
 ## Features
-passFox is at a very early stage, but the basic features work.
+passFox is at an early stage, but the basic features are in.
 
 ### Currently implemented features
 * Listing passwords and directories
@@ -14,10 +14,12 @@ passFox is at a very early stage, but the basic features work.
 * Creating, editing and deleting passwords
 
 \* OTP currently only with [my pass fork (tulir/pass)](https://github.com/tulir/pass).
-I haven't been able to find a nice JavaScript OTP library.
+I haven't been able to find a nice (small) JavaScript OTP library.
 
 ### Planned features
-* Autofill?
+* Creating directories
+* (Much) Better error handling
+* Autofill ([Soon™](http://wowwiki.wikia.com/wiki/Soon))
 
 ## Preview
 Here are some fancy screenshots.
