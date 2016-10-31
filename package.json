@@ -6,11 +6,9 @@
     "main": "index.js",
     "author": "Tulir Asokan",
     "engines": {
-        "firefox": ">=38.0a1"
+        "firefox": ">=45.0a1",
+        "thunderbird": ">=45.0a1"
     },
     "license": "GPL-3.0",
-    "keywords": [
-        "jetpack"
-    ],
     "icon": "resource://@passfox/data/icon.png"
 }
