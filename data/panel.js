@@ -53,10 +53,15 @@ $(".action.entry").click(function() {
 })
 
 $("#new-password").click(() => {
-
+	$("#password-create").removeClass("hidden")
 })
 
 $("#update").click(() => addon.port.emit("pass.update", path.dir))
+
+$("#init-store").click(() => {
+	addon.port.emit("pass.init")
+	$("#password-init").removeClass("hidden")
+})
 
 $(".exit.entry").click(exitPasswordView)
 
@@ -68,7 +73,6 @@ function exitPasswordView() {
 		$("#password-actions").addClass("hidden")
 		path.password = ""
 		$("#path").text(path.toUIString())
-		addon.port.emit("pass.list.get", path.dir)
 	}
 }
 
@@ -104,14 +108,20 @@ function addEntry(type, name, isSearchResult) {
 	)
 }
 
-function init() {
-	addon.port.emit("pass.init")
-}
+$("#cancel-create").click(() => $("#password-create").addClass("hidden"))
+
+$("#next-create").click(() => {
+	path.password = $("#new-password-name").val()
+	$("#path").text("Editing " + path.toUIString())
+	$("#password-edit").removeClass("hidden")
+	$("#password-create").addClass("hidden")
+})
 
 $("#cancel-edit").click(() => {
 	$("#password-edit").addClass("hidden")
 	$("#password-raw-edit").empty()
 	$("#path").text(path.toUIString())
+	addon.port.emit("pass.list.get", path.dir)
 })
 
 $("#save-edit").click(() =>
@@ -182,11 +192,5 @@ addon.port.on("pass.list", data => {
 })
 
 addon.port.on("pass.empty", () => {
-	$("#passwords").html("\
-		<div class='init-wrap'> \
-			<button class='init-store' onClick='init()'> \
-				Initialize Password Store \
-			</button> \
-		</div> \
-	")
+	$("#password-init").removeClass("hidden")
 })

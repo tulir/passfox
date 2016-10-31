@@ -19,7 +19,7 @@ body {
 
 .top-bar {
 	position: fixed;
-	z-index: 10;
+	z-index: 20;
 	top: 0;
 	right: 0;
 	left: 0;
@@ -47,7 +47,7 @@ body {
 
 .path {
 	position: fixed;
-	z-index: 11;
+	z-index: 21;
 	top: 2.25rem;
 	right: 0;
 	left: 0;
@@ -55,7 +55,7 @@ body {
 	height: 1.25rem;
 }
 
-.passwords, .password-actions, .password-view, .password-edit {
+.container {
 	position: absolute;
 	top: 3.5rem;
 	right: 0;
@@ -81,11 +81,7 @@ body {
 		background-color: #ADADAD;
 	}
 
-	.password-list-container.search-results + .new-password {
-		display: none;
-	}
-
-	.new-password {
+	.new {
 		font-style: italic;
 	}
 
@@ -112,23 +108,22 @@ body {
 			font-weight: bold;
 		}
 	}
-
-	.edit-view {
-
-	}
 }
 
 .passwords {
-	z-index: 5;
+	z-index: 10;
+
+	.password-list.search-results ~ .new {
+		display: none;
+	}
 }
 
 .password-actions {
-	z-index: 6;
+	z-index: 11;
 }
 
 .password-view {
-	z-index: 7;
-	bottom: 0;
+	z-index: 12;
 
 	.static-view {
 		overflow: auto;
@@ -141,8 +136,7 @@ body {
 }
 
 .password-edit {
-	z-index: 8;
-	bottom: 0;
+	z-index: 13;
 
 	overflow-y: hidden;
 
@@ -161,8 +155,33 @@ body {
 			border: 1px solid #50D367;
 		}
 	}
+}
 
-	.edit-action {
+.password-create {
+	z-index: 14;
+
+	text-align: center;
+
+	.password-name {
+	}
+
+	.password-name-label {
+
+	}
+}
+
+.password-init {
+	z-index: 19;
+}
+
+.hidden {
+	display: none !important;
+}
+
+.bottom-bar, .full-height.container {
+	bottom: 0;
+
+	.bottom-action {
 		position: absolute;
 		bottom: 0;
 
@@ -191,51 +210,20 @@ body {
 		}
 	}
 
-	.edit-action:hover {
+	.bottom-action:hover {
 		background-color: #2193B1;
 	}
-}
-
-.hidden {
-	display: none !important;
 }
 
 .bottom-bar {
 	position: fixed;
-	z-index: 4;
+	z-index: 9;
 	right: 0;
 	bottom: 0;
 	left: 0;
 
-	height: 1.7rem;
+	height: 1.575rem;
 	padding: .25rem 0;
 
 	background-color: #47B9D7;
-
-	button {
-		position: absolute;
-		bottom: 0;
-
-		width: 50%;
-		padding: .375rem 1rem;
-
-		color: white;
-		border: none;
-		border-radius: 0;
-		background-color: inherit;
-
-		font-size: 1rem;
-		font-weight: bold;
-
-		&.left {
-			left: 0;
-		}
-		&.right {
-			right: 0;
-		}
-	}
-
-	button:hover {
-		background-color: #2193B1;
-	}
 }

@@ -29,13 +29,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 			id="search"
 		>
 	</div>
-
 	<div class="path" id="path"></div>
-	<div class="passwords">
-		<div class="password-list-container" id="passwords"></div>
-		<div class="entry new-password" id="new-password">Insert Password...</div>
+
+	<div class="passwords container">
+		<div class="password-list" id="passwords"></div>
+		<div class="new entry" id="new-password">Insert Password...</div>
+		<div class="new entry" id="new-directory">Create Directory...</div>
 	</div>
-	<div class="password-actions hidden" id="password-actions">
+	<div class="hidden password-actions container" id="password-actions">
 		<div class="exit entry">..</div>
 		<div class="action entry" action="copy-password">Copy Password</div>
 		<div class="action entry" action="copy-username">Copy Username</div>
@@ -44,19 +45,36 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 		<div class="action entry" action="edit">Edit Contents</div>
 		<div class="action entry" action="delete">Delete</div>
 	</div>
-	<div class="password-view hidden" id="password-view">
+	<div class="hidden full-height password-view container" id="password-view">
 		<div class="exit entry">..</div>
 		<div class="raw-view static-view" id="password-raw-view"></div>
 	</div>
-	<div class="password-edit hidden" id="password-edit">
+	<div class="hidden full-height password-edit container" id="password-edit">
 		<textarea class="raw-view edit-view" id="password-raw-edit"></textarea>
-		<div class="edit-action left" id="cancel-edit">Cancel</div>
-		<div class="edit-action right" id="save-edit">Save</div>
+
+		<div class="left bottom-action" id="cancel-edit">Cancel</div>
+		<div class="right bottom-action" id="save-edit">Save</div>
+	</div>
+	<div class="hidden full-height password-create container" id="password-create">
+		<br><br><br>
+		<label for="new-password-name" class="password-name-label">
+			Enter name for password
+		</label>
+		<br>
+		<input type="text" class="password-name" id="new-password-name">
+
+		<div class="left bottom-action" id="cancel-create">Cancel</div>
+		<div class="right bottom-action" id="next-create">Next</div>
+	</div>
+	<div class="hidden password-init container" id="password-init">
+		<button class="init-store" id="init-store">
+			Initialize Password Store
+		</button>
 	</div>
 
 	<div class="bottom-bar">
-		<button class="bottom-btn left" id="update">Update</button>
-		<button class="bottom-btn right hidden" id="useless"></button>
+		<div class="left bottom-action" id="update">Update</div>
+		<div class="right bottom-btn hidden" id="useless"></div>
 	</div>
 
 	<script src="/lib/jquery-3.1.1.min.js"></script>
