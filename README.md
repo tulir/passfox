@@ -11,13 +11,12 @@ passFox is at a very early stage, but the basic features work.
 * Basic search (case-insensitive, by file and directory name)
 * Copying passwords, usernames and one-time passwords*
 * Displaying the content of password files
-* Editing and deleting passwords
+* Creating, editing and deleting passwords
 
 \* OTP currently only with [my pass fork (tulir/pass)](https://github.com/tulir/pass).
 I haven't been able to find a nice JavaScript OTP library.
 
 ### Planned features
-* Creating new passwords
 * Autofill?
 
 ## Preview
