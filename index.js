@@ -67,7 +67,7 @@ panel.port.on("pass.list.get", path =>
 )
 
 panel.port.on("pass.insert", (path, password, data) =>
-	exec.insert(path.concat([password]).join(" "), data, () =>
+	exec.insert(path.concat([password]).join("/"), data, () =>
 		panel.port.emit("pass.insert.done")
 	)
 )
