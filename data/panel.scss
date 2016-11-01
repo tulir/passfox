@@ -160,13 +160,10 @@ body {
 .password-create {
 	z-index: 14;
 
-	text-align: center;
+	.password-name-container {
+		margin-top: 5rem;
 
-	.password-name {
-	}
-
-	.password-name-label {
-
+		text-align: center;
 	}
 }
 
