@@ -134,7 +134,7 @@ function copyOTP(fullPath, name) {
 	})
 }
 
-function failed(err, fullPath) {
+function failed(err, name) {
 	if (err.indexOf("gpg: decryption failed") !== -1) {
 		notifications.notify({
 			title: "Failed to decrypt password!",
@@ -143,15 +143,15 @@ function failed(err, fullPath) {
 	} else if (err.indexOf("is not in the password store.") !== -1) {
 		notifications.notify({
 			title: "Password not found",
-			text: "There is no password at " + fullPath
+			text: "There is no password with the name " + name
 		})
 	} else if (err.indexOf("Error: No username found") !== -1) {
 		notifications.notify({
-			title: "No username key found in " + fullPath
+			title: "No username key found in " + name
 		})
 	} else if (err.indexOf("Error: No OTP key found") !== -1) {
 		notifications.notify({
-			title: "No OTP key found in " + fullPath
+			title: "No OTP key found in " + name
 		})
 	} else {
 		return false
