@@ -140,7 +140,6 @@ function failed(err, fullPath) {
 			title: "Failed to decrypt password!",
 			text: err
 		})
-		return true
 	} else if (err.indexOf("is not in the password store.") !== -1) {
 		notifications.notify({
 			title: "Password not found",
@@ -154,7 +153,10 @@ function failed(err, fullPath) {
 		notifications.notify({
 			title: "No OTP key found in " + fullPath
 		})
+	} else {
+		return false
 	}
+	return true
 }
 
 function copy(val) {
