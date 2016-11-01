@@ -71,9 +71,13 @@ function exitPasswordView() {
 		$("#password-view").addClass("hidden")
 		$("#path").text(path.toUIString())
 	} else if (!$("#password-actions").hasClass("hidden")) {
-		$("#password-actions").addClass("hidden")
 		path.password = ""
+		$("#password-actions").addClass("hidden")
 		$("#path").text(path.toUIString())
+		if ($("#passwords").hasClass("search-results")) {
+			addon.port.emit("pass.list.get", path.dir)
+			$("#path").text("Search results")
+		}
 	}
 }
 
