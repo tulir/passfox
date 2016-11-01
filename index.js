@@ -91,7 +91,7 @@ panel.port.on("pass.action", (action, path, password) => {
 			panel.port.emit("pass." + action, data)
 			panel.show({position: button})
 		})
-		return
+		break
 	case "delete":
 		exec.delete(fullPath, () => {
 			update(path)

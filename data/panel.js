@@ -49,12 +49,13 @@ $("#search").keyup(function() {
 })
 
 $(".action.entry").click(function() {
-	addon.port.emit("pass.action", $(this).attr("action"), path.dir, path.password)
+	addon.port.emit(
+		"pass.action", $(this).attr("action"),
+		path.dir, path.password
+	)
 })
 
-$("#new-password").click(() => {
-	$("#password-create").removeClass("hidden")
-})
+$("#new-password").click(() => $("#password-create").removeClass("hidden"))
 
 $("#update").click(() => addon.port.emit("pass.update", path.dir))
 
@@ -98,14 +99,15 @@ function directoryClick(name, searchClick) {
 }
 
 function addEntry(type, name, isSearchResult) {
-	isSearchResult = isSearchResult ? "true" : "false"
-	$("#passwords").append(
-		"<div \
-		onClick='" + type + "Click(this.innerHTML, " + isSearchResult + ")' \
-		class='" + type + " entry'>"
-			+ name +
-		"</div>"
-	)
+	let password = $("<div class='entry'></div>")
+	password.addClass(type)
+	password.text(name)
+	if (type === "directory") {
+		password.click(() => directoryClick(name, isSearchResult))
+	} else if (type === "password") {
+		password.click(() => passwordClick(name, isSearchResult))
+	}
+	password.appendTo($("#passwords"))
 }
 
 $("#cancel-create").click(() => $("#password-create").addClass("hidden"))
