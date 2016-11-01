@@ -18,6 +18,7 @@ I haven't been able to find a nice (small) JavaScript OTP library.
 
 ### Planned features
 * Creating directories
+* Generating passwords
 * Detecting correct password based on URL
 	* Config for manually assigning a specific password file for an URL
 * Preferences
