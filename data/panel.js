@@ -16,6 +16,7 @@
 let path = {
 	dir: [],
 	password: "",
+
 	toUIString() {
 		return "/" + this.toString()
 	},
@@ -48,20 +49,21 @@ $("#search").keyup(function() {
 	}
 })
 
-$(".action.entry").click(function() {
-	addon.port.emit("pass.action", $(this).attr("action"), path.dir, path.password)
-})
-
-$("#new-password").click(() => {
-	$("#password-create").removeClass("hidden")
-})
-
-$("#update").click(() => addon.port.emit("pass.update", path.dir))
-
 $("#init-store").click(() => {
 	addon.port.emit("pass.init")
 	$("#password-init").removeClass("hidden")
 })
+
+$(".action.entry").click(function() {
+	addon.port.emit(
+		"pass.action", $(this).attr("action"),
+		path.dir, path.password
+	)
+})
+
+$("#new-password").click(() => $("#password-create").removeClass("hidden"))
+
+$("#update").click(() => addon.port.emit("pass.update", path.dir))
 
 $(".exit.entry").click(exitPasswordView)
 
