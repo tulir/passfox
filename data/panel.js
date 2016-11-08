@@ -196,3 +196,5 @@ addon.port.on("pass.list", data => {
 addon.port.on("pass.empty", () => {
 	$("#password-init").removeClass("hidden")
 })
+
+$("#preferences").click(() => addon.port.emit("pass.preferences"))

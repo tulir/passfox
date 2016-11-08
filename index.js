@@ -16,6 +16,7 @@
 const pass = require("pass/store")
 const exec = require("pass/exec")
 const config = require("pass/config")
+const autocomplete = require("pass/autocomplete")
 const clipboard = require("sdk/clipboard")
 const { setTimeout } = require('sdk/timers')
 const notifications = require("sdk/notifications")
@@ -24,7 +25,7 @@ let store = new pass.PasswordStore()
 
 let panel = require("sdk/panel").Panel({
 	contentURL: "./panel.html",
-	onHide: () => button.state('window', {checked: false}),
+	onHide: () => button.state("window", {checked: false}),
 	height: 320,
 	width: 440 // 20rem * 27.5rem
 })
@@ -55,6 +56,10 @@ function update(path) {
 }
 
 panel.port.on("pass.update", update)
+
+panel.port.on("pass.preferences", () => {
+	autocomplete.test()
+})
 
 panel.port.on("pass.init", () => exec.init(() => update([])))
 
