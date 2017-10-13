@@ -1,3 +1,7 @@
+# LEGACY EXTENSION
+This extension was made using the old Firefox Addon SDK, which means it won't work after Firefox 57 (Quantum).
+Once I make a new a new version of this addon using the WebExtensions framework, it'll be available at [tulir/passfox](https://github.com/tulir/passfox)
+
 # passFox
 A passwordstore.org extension for Firefox.
 
